@@ -8,9 +8,9 @@ This is a simple and casual interactive tool like Perl and Excel for daily work.
 
 Contents:
 
-  * [Run](#Run)
-  * [Example](#Example)
-  * [API](#API)
+  * [Run](#run)
+  * [Example](#example)
+  * [Specification](#specification)
 
 
 Run
@@ -167,5 +167,5 @@ $ ghc -e '4 * giga .@pos1'
 ```
 
 
-API
----
+Specification
+-------------
