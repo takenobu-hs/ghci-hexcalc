@@ -16,12 +16,12 @@ Contents:
 Run
 ---
 
-On GHC:
+Bare GHCi:
 ```bash
 $ ghci src/Data/GHex.hs
 ```
 
-On Stack:
+Stack:
 ```bash
 $ stack ghci -- src/Data/GHex.hs
 ```
@@ -86,7 +86,7 @@ ghci> 0xff0000 ./ 256
 ghci> 0xfedc .% 256
 ```
 
-#### Setting bits and bytes
+#### Generate bit and byte with position
 
 ```
 ghci> bit1 15
@@ -110,7 +110,7 @@ ghci> pos0 y
 ghci> x .@pos1
 ```
 
-#### Preset-constants
+#### Predefined-constants
 
 ```
 ghci> mega
@@ -169,3 +169,159 @@ $ ghc -e '4 * giga .@pos1'
 
 Specification
 -------------
+
+#### Numeric literals by `Hex` type annotation
+
+| Operation                     | Description                           |
+|:------------------------------|:--------------------------------------|
+| `:: Hex`                      | Type annotation for basic type `Hex`  |
+| `255 :: Hex`                  | Decimal number literal                |
+| `0xff :: Hex`                 | Hexadecimal number literal            |
+| `0b1101 :: Hex`               | binary number literal                 |
+				
+
+#### Derived operations
+
+| Operation                     | Description                           |
+|:------------------------------|:--------------------------------------|
+| Many operations               | Eq, Ord, Num, Enum, Real, Bounded, Integral, Bits and FiniteBits class available  |
+
+
+#### Arithmetic operations
+
+| Operation                     | Description                           |
+|:------------------------------|:--------------------------------------|
+| `+`, `-`, `*`, `^`, ...       | Num, Real class available             |
+| `neg` x1                      | Negation. (inv x1 - 1)                |
+| x1 `./` x2                    | Integer division                      |
+| x1 `.%` x2                    | Integer modulo                        |
+
+
+#### Logical operations
+
+| Operation                     | Description                           |
+|:------------------------------|:--------------------------------------|
+| x1 `.&` x2                    | Bitwise "and"                         |
+| x1 `.\|` x2                   | Bitwise "or"                          |
+| x1 `.^` x2                    | Bitwise "xor"                         |
+| `inv` x1                      | Bitwise "not" (invert)                |
+
+
+#### Shift operations
+
+| Operation                     | Description                           |
+|:------------------------------|:--------------------------------------|
+| x1 `.<<` n1                   | Logical left shift                    |
+| x1 `.>>` n1                   | Logical right shift                   |
+
+
+#### Generate bit and byte with position
+
+| Operation                     | Description                           |
+|:------------------------------|:--------------------------------------|
+| `bit1` n1                     | Set a bit                             |
+| `bits` n1 n2                  | Set bits from n1 to n2                |
+| `bitList` [n1, n2, ... nn]    | Set bits with List                    |
+| `byte1` n1                    | Set a byte                            |
+| `bytes` n1 n2                 | Set bytes from n1 to n2               |
+
+
+#### Get asserted bit positions
+
+| Operation                     | Description                           |
+|:------------------------------|:--------------------------------------|
+| `pos1` x1                     | Get bit positions asserted with 1     |
+| `pos0` x1                     | Get bit positions asserted with 0     |
+
+
+#### Extract and replace bits
+
+| Operation                     | Description                           |
+|:------------------------------|:--------------------------------------|
+| `gets` x1 n1 n2               | Extract bits from n1 to n2            |
+| `puts` x1 n1 n2 x2            | Replace bits from n1 to n2            |
+|                               |                                       |
+| `getBits` x1 n1 n2            | Synonym to gets                       |
+| `getBytes` x1 n1 n2           | Extract bytes from n1 to n2           |
+| `putBits` x1 n1 n2 x2         | Synonym to puts                       |
+| `putBytes` x1 n1 n2 x2        | Replace bytes from n1 to n2           |
+
+
+#### Set and clear bits
+
+| Operation                     | Description                           |
+|:------------------------------|:--------------------------------------|
+| `sbits` x1 n1 n2              | Set bits from n1 to n2 of x1          |
+| `cbits` x1 n1 n2              | Clear bits from n1 to n2 of x1        |
+
+
+#### Permute
+
+| Operation                     | Description                           |
+|:------------------------------|:--------------------------------------|
+| `bitrev` x1                   | Reverse bits                          |
+| `byterev` x1                  | Reverse bytes                         |
+
+
+#### Split and merge
+
+| Operation                     | Description                           |
+|:------------------------------|:--------------------------------------|
+| `splitBits` x1                | Split bits to List                    |
+| `splitBytes` x1               | Split bytes to List                   |
+| `mergeBits` [x1, x2, .. xn]   | Merge bits from List                  |
+| `mergeBytes` [x1, x2, .. xn]  | Merge bytes from List                 |
+
+
+#### Predefined-constants
+
+| Constant                      | Description                           |
+|:------------------------------|:--------------------------------------|
+| `exa`                         | 2^60 (It's not 10^18)                 |
+| `peta`                        | 2^50 (It's not 10^15)                 |
+| `tera`                        | 2^40 (It's not 10^12)                 |
+| `giga`                        | 2^30 (It's not 10^9)                  |
+| `mega`                        | 2^20 (It's not 10^6)                  |
+| `kilo`                        | 2^10 (It's not 10^3)                  |
+|                               |                                       |
+| `zero`                        | 0                                     |
+| `one`                         | 1                                     |
+| `all0`                        | 0x0                                   |
+| `all1`                        | inv all0                              |
+|                               |                                       |
+| `hexBitSize`                  | 64 on x86_64. Thus size of `Word`     |
+| `hexBitSeq`                   | [hexBitSize-1, hexBitSize-2, .. 0]    |
+
+
+#### Postfix-notation for hex, bin, dec and T/G/M/K unit formatting
+
+| Operation                     | Description                           |
+|:------------------------------|:--------------------------------------|
+| `.@hex`                       | Show in hexadecimal string            |
+| `.@bin`                       | Show in binary string                 |
+| `.@dec`                       | Show in decimal string                |
+| `.@decT`                      | Show in decimal of Tera unit          |
+| `.@decG`                      | Show in decimal of Giga unit          |
+| `.@decM`                      | Show in decimal of Mega unit          |
+| `.@decK`                      | Show in decimal of Kilo unit          |
+|                               |                                       |
+| `.@hex8`                      | Show in binary string of 8bit         |
+| `.@hex16`                     | Show in binary string of 16bit        |
+| `.@hex32`                     | Show in binary string of 32bit        |
+| `.@hex64`                     | Show in binary string of 64bit        |
+| `.@hexN` n1                   | Show in binary string of n1 bit       |
+| `.@bin8`                      | Show in binary string of 8bit         |
+| `.@bin16`                     | Show in binary string of 16bit        |
+| `.@bin32`                     | Show in binary string of 32bit        |
+| `.@bin64`                     | Show in binary string of 64bit        |
+| `.@binN` n1                   | Show in binary string of n1 bit       |
+|                               |                                       |
+| `.@signed`                    | Show in singed decimal with `Word`    |
+
+
+#### Miscellaneous
+
+| Operation                     | Description                           |
+|:------------------------------|:--------------------------------------|
+| `cls`                         | Clear screen on VT100 terminal        |
+| `usage`                       | Show simple help                      |
