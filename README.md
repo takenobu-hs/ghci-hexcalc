@@ -97,10 +97,10 @@ ghci> byte1 2
 ghci> bytes 4 3
 ```
 
-#### Extract bits
-
+#### Extract and replace bits
 ```
 ghci> gets x 7 4
+ghci> puts x 7 4 0b1101
 ```
 
 #### Get asserted bit positions
