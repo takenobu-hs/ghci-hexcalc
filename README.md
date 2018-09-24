@@ -3,7 +3,7 @@
 GHCi as a Hex-Calculator interactive
 ====================================
 
-This is an interactive hex-calculator using GHCi.  
+This is an interactive hex-calculator using Haskell/GHCi.  
 This is a simple and casual interactive tool like Perl and Excel for daily work.
 
 Contents:
@@ -97,10 +97,10 @@ ghci> byte1 2
 ghci> bytes 4 3
 ```
 
-#### Extract bits
-
+#### Extract and replace bits
 ```
 ghci> gets x 7 4
+ghci> puts x 7 4 0b1101
 ```
 
 #### Get asserted bit positions
@@ -203,7 +203,7 @@ Specification
 | Operation                     | Description                           |
 |:------------------------------|:--------------------------------------|
 | `+`, `-`, `*`, `^`, ...       | Num, Real class available             |
-| `neg` x1                      | Negation. (inv x1 - 1)                |
+| `neg` x1                      | Negation. (inv x1 + 1)                |
 | x1 `./` x2                    | Integer division                      |
 | x1 `.%` x2                    | Integer modulo                        |
 
@@ -233,6 +233,7 @@ Specification
 | `bit1` n1                     | Set a bit                             |
 | `bits` n1 n2                  | Set bits from n1 to n2                |
 | `bitList` [n1, n2, ... nn]    | Set bits with List                    |
+| `mask` n1                     | Set bits from 0 to n1                 |
 | `byte1` n1                    | Set a byte                            |
 | `bytes` n1 n2                 | Set bytes from n1 to n2               |
 
@@ -351,12 +352,12 @@ When `-XNumericUnderscores` extention enabled, you can use underscores in numeri
 GHC language extensions can be described in `~/.ghci` or `./ghci` file:
 ```
 :set -XBinaryLiterals
-:set -NumericUnderscores
+:set -XNumericUnderscores
 ```
 
 GHC language extensions can also be specified as an option when starting GHC and GHCi:
 ```bash
-$ ghci -XBinaryLiterals -NumericUnderscores
+$ ghci -XBinaryLiterals -XNumericUnderscores
 ```
 
 
