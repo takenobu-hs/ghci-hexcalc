@@ -203,7 +203,7 @@ Specification
 | Operation                     | Description                           |
 |:------------------------------|:--------------------------------------|
 | `+`, `-`, `*`, `^`, ...       | Num, Real class available             |
-| `neg` x1                      | Negation. (inv x1 - 1)                |
+| `neg` x1                      | Negation. (inv x1 + 1)                |
 | x1 `./` x2                    | Integer division                      |
 | x1 `.%` x2                    | Integer modulo                        |
 
