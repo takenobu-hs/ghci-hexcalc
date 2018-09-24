@@ -351,12 +351,12 @@ When `-XNumericUnderscores` extention enabled, you can use underscores in numeri
 GHC language extensions can be described in `~/.ghci` or `./ghci` file:
 ```
 :set -XBinaryLiterals
-:set -NumericUnderscores
+:set -XNumericUnderscores
 ```
 
 GHC language extensions can also be specified as an option when starting GHC and GHCi:
 ```bash
-$ ghci -XBinaryLiterals -NumericUnderscores
+$ ghci -XBinaryLiterals -XNumericUnderscores
 ```
 
 
