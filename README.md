@@ -233,6 +233,7 @@ Specification
 | `bit1` n1                     | Set a bit                             |
 | `bits` n1 n2                  | Set bits from n1 to n2                |
 | `bitList` [n1, n2, ... nn]    | Set bits with List                    |
+| `mask` n1                     | Set bits from 0 to n1                 |
 | `byte1` n1                    | Set a byte                            |
 | `bytes` n1 n2                 | Set bytes from n1 to n2               |
 
