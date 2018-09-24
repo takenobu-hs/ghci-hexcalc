@@ -3,7 +3,7 @@
 GHCi as a Hex-Calculator interactive
 ====================================
 
-This is an interactive hex-calculator using GHCi.  
+This is an interactive hex-calculator using Haskell/GHCi.  
 This is a simple and casual interactive tool like Perl and Excel for daily work.
 
 Contents:
