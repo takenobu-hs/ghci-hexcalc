@@ -3,7 +3,7 @@
 GHCi as a Hex-Calculator interactive
 ====================================
 
-This is an interactive hex-calculator on GHCi.  
+This is an interactive hex-calculator using GHCi.  
 This is a simple and casual interactive tool like Perl and Excel for daily work.
 
 Contents:
@@ -11,6 +11,7 @@ Contents:
   * [Run](#run)
   * [Example](#example)
   * [Specification](#specification)
+  * [Appendix](#appendix)
 
 
 Run
@@ -170,6 +171,16 @@ $ ghc -e '4 * giga .@pos1'
 Specification
 -------------
 
+#### General
+
+* Core type:
+  * The core type of this package is `Hex` type.
+  * `Hex` type is implemented in unsigned `Word`.
+  * `Hex` type is 64 bit length on x86_64.
+* Operators:
+  * Operators in this package begin with `.`(dot), like `.&` and `.|`.
+
+
 #### Numeric literals by `Hex` type annotation
 
 | Operation                     | Description                           |
@@ -230,8 +241,8 @@ Specification
 
 | Operation                     | Description                           |
 |:------------------------------|:--------------------------------------|
-| `pos1` x1                     | Get bit positions asserted with 1     |
-| `pos0` x1                     | Get bit positions asserted with 0     |
+| `pos1` x1                     | Get bit positions asserted with 1      |
+| `pos0` x1                     | Get bit positions asserted with 0      |
 
 
 #### Extract and replace bits
@@ -323,5 +334,44 @@ Specification
 
 | Operation                     | Description                           |
 |:------------------------------|:--------------------------------------|
-| `cls`                         | Clear screen on VT100 terminal        |
+| `cls`                         | Clear screen on VT100 terminal       |
 | `usage`                       | Show simple help                      |
+
+
+Appendix
+--------
+
+#### GHC language extention for numeric literals
+
+When `-XBinaryLiterals` extention enabled, you can use binary literals on GHC and GHCi, like `0b1101`.
+
+When `-XNumericUnderscores` extention enabled, you can use underscores in numeric literals on GHC and GHCi, like `0xff_ff`.
+`-XNumericUnderscores` extension is available GHC 8.6 or later.
+
+GHC language extensions can be described in `~/.ghci` or `./ghci` file:
+```
+:set -XBinaryLiterals
+:set -NumericUnderscores
+```
+
+GHC language extensions can also be specified as an option when starting GHC and GHCi:
+```bash
+$ ghci -XBinaryLiterals -NumericUnderscores
+```
+
+
+#### Shell alias
+
+It is useful to set the alias of the shell:
+```bash
+alias ghex="ghci $XX/src/Data/GHex.hs"
+```
+
+
+#### Expression evaluation mode of GHC
+
+You can also run in one shot mode (a expression evaluation mod) by `ghc -e`:
+```bash
+$ ghc -e '4 * giga'
+0x0000_0004_0000_0000
+```
