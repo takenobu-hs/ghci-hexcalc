@@ -96,6 +96,10 @@ module Data.GHex (
     -- ** Miscellaneous
     cls,
     usage
+
+    -- ** Properties
+    -- $property
+
   ) where
 
 import           Data.Bits
@@ -796,3 +800,60 @@ colorInv = "\ESC[7m"
 -- | Reset attribute
 colorReset :: String
 colorReset = "\ESC[0m"
+
+------------------------------------------------------------------------
+-- Property test with quickcheck
+------------------------------------------------------------------------
+
+-- | Property test
+-- $setup
+-- >>> import Test.QuickCheck
+-- >>> skip = True
+-- >>> when c x = if c then x else skip
+-- >>> :{
+-- instance Arbitrary Hex where
+--   arbitrary = Hex `fmap`
+--               oneof [ choose(0x0000000000000000, 0x000000000000ffff)
+--                     , choose(0x00000000ffffff00, 0x000000ffffffffff)
+--                     , choose(0x00ffffffffffffff, 0xff00000000000000)
+--                     , choose(0x0000000000000000, 0xffffffffffffffff) ]
+-- >>> :}
+
+-- $property
+-- Property in quickcheck and doctest.
+--
+-- prop> (inv $ inv x) == x
+-- prop> (neg $ neg x) == x
+-- prop> (neg x) == (inv x + 1)
+--
+-- prop> (x .& y) == (inv ((inv x) .| (inv y)))             -- De Morgan
+-- prop> (x .^ y) == (((x .& (inv y)) .| ((inv x) .& y)))   -- xor
+--
+-- prop> when (x2 >= 0) $ (x1 .<< x2) == (x1 * (2^x2))
+-- prop> when (x2 >= 0) $ (x1 .>> x2) == (bitrev ((bitrev x1) .<< x2))
+--
+-- prop> when (x >= 0) $ (bit1 x) == (2^x)
+-- prop> when (x >= 0) $ (byte1 x) == (0xff .<< (8*x))
+--
+-- prop> when (x1 >= x2 && x2 >= 0) $ (bits x1 x2) == (sum $ map (2^) [x2..x1])
+-- prop> when (x1 >= x2 && x2 >= 0) $ (bytes x1 x2) == (sum $ map byte1 [x2..x1])
+--
+-- prop> when (x1 >= x2 && x2 >= 0) $ (gets all0 x1 x2) == all0
+-- prop> when (x1 >= x2 && x2 >= 0) $ ((gets x x1 x2) .<< x2) == (x .& bits x1 x2)
+-- prop> when (x1 >= x2 && x2 >= 0) $ (puts x x1 x2 $ gets x x1 x2) == x
+--
+-- prop> when (x1 >= x2 && x2 >= 0) $ (gather x (bits x1 x2)) == (gets x x1 x2)
+--
+-- prop> when (x1 >= x2 && x2 >= 0) $ (sbits all0 x1 x2) == (bits x1 x2)
+-- prop> when (x1 >= x2 && x2 >= 0) $ (sbits all0 x1 x2) == (puts all0 x1 x2 all1)
+-- prop> when (x1 >= x2 && x2 >= 0) $ (cbits all1 x1 x2) == (inv(bits x1 x2))
+-- prop> when (x1 >= x2 && x2 >= 0) $ (cbits all1 x1 x2) == (puts all1 x1 x2 all0)
+-- prop> when (x1 >= x2 && x2 >= 0) $ (cbits x x1 x2) == (inv (sbits (inv x) x1 x2))
+--
+-- prop> (x .@pos1 .@bitList) == x
+-- prop> (x .@pos0 .@bitList) == (inv x)
+--
+-- prop> (mergeBits $ splitBits x) == x
+-- prop> (mergeBytes $ splitBytes x) == x
+-- prop> (bitrev $ bitrev x) == x
+-- prop> (byterev $ byterev x) == x
