@@ -3,6 +3,22 @@
 {-# LANGUAGE BinaryLiterals             #-}
 -- LANGUAGE NumericUnderscores   -- ghc8.6 or later
 
+-----------------------------------------------------------------------------
+-- |
+-- Module      :  Data.GHex
+-- Copyright   :  (c) Takenobu Tani
+-- License     :  BSD3
+--
+-- Maintainer  :  Takenobu Tani <takenobu.hs@gmail.com>
+-- Stability   :  experimental
+-- Portability :  non-portable (GHC Extensions)
+--
+-- This is an interactive hex-calculator using Haskell/GHCi.
+--
+-- This is a simple and casual interactive tool like Perl and Excel for daily work.
+--
+-----------------------------------------------------------------------------
+
 module Data.GHex (
 
     -- ** Basic data type
@@ -780,4 +796,3 @@ colorInv = "\ESC[7m"
 -- | Reset attribute
 colorReset :: String
 colorReset = "\ESC[0m"
-
