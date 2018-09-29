@@ -27,3 +27,13 @@ library
   build-depends:       base >=4.7 && <5
   hs-source-dirs:      src
   default-language:    Haskell2010
+
+test-suite test-ghci-hexcalc
+  type:                exitcode-stdio-1.0
+  main-is:             Spec.hs
+  hs-source-dirs:      test
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  build-depends:       base >=4.7 && <5,
+                       doctest,
+                       ghci-hexcalc
+  default-language:    Haskell2010
