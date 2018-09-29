@@ -829,8 +829,10 @@ colorReset = "\ESC[0m"
 -- prop> (x .& y) == (inv ((inv x) .| (inv y)))             -- De Morgan
 -- prop> (x .^ y) == (((x .& (inv y)) .| ((inv x) .& y)))   -- xor
 --
--- prop> when (x2 >= 0) $ (x1 .<< x2) == (x1 * (2^x2))
--- prop> when (x2 >= 0) $ (x1 .>> x2) == (bitrev ((bitrev x1) .<< x2))
+-- prop> ((x ./ y)*y + (x .% y)) == x
+--
+-- prop> when (n >= 0) $ (x .<< n) == (x * (2^n))
+-- prop> when (n >= 0) $ (x .>> n) == (bitrev ((bitrev x) .<< n))
 --
 -- prop> when (x >= 0) $ (bit1 x) == (2^x)
 -- prop> when (x >= 0) $ (byte1 x) == (0xff .<< (8*x))
