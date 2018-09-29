@@ -3,7 +3,84 @@
 {-# LANGUAGE BinaryLiterals             #-}
 -- LANGUAGE NumericUnderscores   -- ghc8.6 or later
 
-module Data.GHex where
+module Data.GHex (
+
+    -- ** Basic data type
+    Hex,
+
+    -- ** Logical operations
+    (.&), (.|), (.^), inv,
+
+    -- ** Arithmetic operations
+    (./), (.%), neg, signext,
+
+    -- ** Shift operations
+    (.<<), (.>>),
+
+    -- ** Generate bits and bytes with position
+    bit1, bits, bitList, byte1, bytes, mask,
+
+    -- ** Get asserted bit positions
+    pos1, pos0, range1,
+
+    -- ** Extract and replace bits
+    gets, puts, getBit1, getByte1, getBits, getBytes,
+    putBit1, putBits, putBytes,
+
+    -- ** Set and clear bits
+    sbits, cbits,
+
+    -- ** Permute
+    bitrev, byterev,
+    gather,
+
+    -- ** Split and merge
+    splitBits, splitBytes, mergeBits, mergeBytes,
+
+    -- ** Predefined-constants
+
+    -- *** Unit constants
+    -- $constants_unit
+    exa, peta, tera, giga, mega, kilo,
+
+    -- *** Utility constants
+    -- $constants_unitity
+    zero, one, all0, all1,
+
+    -- *** Implementation constants
+    -- $constants_impl
+    hexBitSize, hexBitSeq, hexByteSize, hexByteSeq,
+
+    -- ** Postfix notation
+    (.@),
+
+    -- ** Formatting for hex, bin, dec and T/G/M/K unit
+    -- $formatting
+
+    -- *** Hexadecimal formatting
+    hex, hexN, hex8, hex16, hex32, hex64,
+
+    -- *** Binary formatting
+    bin, binN, bin8, bin16, bin32, bin64,
+
+    -- *** Decimal formatting
+    dec,
+    decE, decP, decT, decG, decM, decK,
+
+    -- *** Miscellaneous formatting
+    signed,
+    strip,
+
+    -- ** Pretty print
+    color, ppr,
+
+    -- ** Input & convert
+    inputRawHexIO,
+
+    -- ** Miscellaneous
+    cls,
+    usage
+  ) where
 
 import           Data.Bits
 import           Data.List   (foldl', intercalate)
@@ -264,13 +341,6 @@ putBits = puts
 putBytes :: Hex -> Int -> Int -> Hex -> Hex
 putBytes x1 upper lower x2 = puts x1 ((upper+1)*8-1) (lower*8) x2
 
--- | Gather bits
---
--- >>> gather 0x12345678 0x0ff000f0
--- 0x0000_0000_0000_0237
-gather x1 x2 = let pairs = zip (splitBits x1) (splitBits x2)
-               in  mergeBits $ map fst $ filter(\(x,y) -> y == 1) pairs
-
 
 ------------------------------------------------------------------------
 -- Set and clear bits
@@ -308,6 +378,13 @@ bitrev = mergeBits . reverse . splitBits
 -- 0xefcd_1111_3412_0000
 byterev :: Hex -> Hex
 byterev = mergeBytes . reverse . splitBytes
+
+-- | Gather bits
+--
+-- >>> gather 0x12345678 0x0ff000f0
+-- 0x0000_0000_0000_0237
+gather x1 x2 = let pairs = zip (splitBits x1) (splitBits x2)
+               in  mergeBits $ map fst $ filter(\(x,y) -> y == 1) pairs
 
 
 ------------------------------------------------------------------------
@@ -349,10 +426,21 @@ mergeBytes xs = foldl' f 0 xs
 -- Predefined-constants
 ------------------------------------------------------------------------
 
--- | Ei, Pi, Ti, Gi, Mi and Ki. It's not E(10^18), ... K(10^3).
+-- $constants_unit
+-- Ei, Pi, Ti, Gi, Mi and Ki. It's not E(10^18), ... K(10^3).
 --
--- >>> foldr1 (.|) [exa, peta, tera, giga, mega, kilo]
--- 0x1004_0100_4010_0400
+-- >>> exa == 2^60
+-- True
+-- >>> peta == 2^50
+-- True
+-- >>> tera == 2^40
+-- True
+-- >>> giga == 2^30
+-- True
+-- >>> mega == 2^20
+-- True
+-- >>> kilo == 2^10
+-- True
 exa  = bit 60 :: Hex
 peta = bit 50 :: Hex
 tera = bit 40 :: Hex
@@ -360,10 +448,11 @@ giga = bit 30 :: Hex
 mega = bit 20 :: Hex
 kilo = bit 10 :: Hex
 
--- | Utility numbers
---
--- >>> one - one == zero
--- True
+-- $constants_unitity
+-- >>> zero
+-- 0x0000_0000_0000_0000
+-- >>> one
+-- 0x0000_0000_0000_0001
 -- >>> all0
 -- 0x0000_0000_0000_0000
 -- >>> all1
@@ -380,16 +469,22 @@ bad  = 0x0bad :: Hex
 test1 = 0x123456789abcdef0 :: Hex
 test2 = 0xfedcba9876543210 :: Hex
 
--- Implementation information for size
+-- $constants_impl
+-- Implementation information of size.
+
+-- | Bit size of Hex type. It's 64 on x86_64.
 hexBitSize :: Int
 hexBitSize = finiteBitSize (1::Hex)
 
+-- | Number sequence. [hexBitSeq-1, hexBitSeq-2, .. 0]
 hexBitSeq :: [Int]
 hexBitSeq = reverse [0..(hexBitSize-1)]
 
+-- | Byte size of Hex type. It's 8 of x86_64.
 hexByteSize :: Int
 hexByteSize = fromInteger ( ceiling ((fromIntegral hexBitSize) / 8))
 
+-- | Number sequence. [hexByteSeq-1, hexByteSeq-2, .. 0]
 hexByteSeq :: [Int]
 hexByteSeq = reverse [0..(hexByteSize-1)]
 
@@ -398,22 +493,51 @@ hexByteSeq = reverse [0..(hexByteSize-1)]
 -- Postfix notation (same as Data.Function.(&))
 ------------------------------------------------------------------------
 
--- | postfix notation
+-- | Operator for postfix notation (same as Data.Function.(&))
 --
 -- >>> 255 .@hex
 -- "0x0000_0000_0000_00ff"
+-- >>> 0xf1 .@bin
+-- "0b1111_0001"
+-- >>> 2^12 .@dec
+-- "4096"
+-- >>> 4 * giga .@pos1
+-- [32]
+--
+-- > 0x0 .@color (bits 31 24)
+-- > 0b0000_0000_0000_0000_0000_0000_0000_0000_1111_1111_0000_0000_0000_0000_0000_0000
+-- >                                           ^^^^ ^^^^
+
 (.@) :: a -> (a -> b) -> b
 x .@ f = f x
 
 
 ------------------------------------------------------------------------
--- Formatting for hex, bin, dec and T/G/M/K unit
+-- Formatting for hex, bin, dec and T,G,M,K unit and any.
 ------------------------------------------------------------------------
 
--- | Hexadecimal formatting
+-- $formatting
+-- Formatting utilities.
 --
--- >>> hex 255
+-- >>> 255 .@hex
 -- "0x0000_0000_0000_00ff"
+-- >>> 255 .@bin
+-- "0b1111_1111"
+-- >>> 0xff .@dec
+-- "255"
+--
+-- >>> 2^32 .@decG
+-- "4"
+--
+-- >>> 0xffffffffffffffff .@signed
+-- "-1"
+--
+-- >>> strip "0b" "0b1101"
+-- "1101"
+-- >>> strip "_" "0x1234_5678_9abc_def0"
+-- "0x123456789abcdef0"
+
+-- Hexadecimal formatting
 hex :: Hex -> String
 hex = hex64
 
@@ -426,10 +550,7 @@ hex16 = hexN 4
 hex32 = hexN 8
 hex64 = hexN 16
 
--- | Binary formatting
---
--- >>> bin 255
--- "0b1111_1111"
+-- Binary formatting
 bin :: Hex -> String
 bin = binN 0
 
@@ -442,17 +563,11 @@ bin16 = binN 16
 bin32 = binN 32
 bin64 = binN 64
 
--- | Decimal formatting
---
--- >>> dec 0xff
--- "255"
+-- Decimal formatting
 dec :: Hex -> String
 dec (Hex x) = show x
 
--- | Decimal formatting with units
---
--- >>> 4 * giga .@decG
--- "4"
+-- Decimal formatting with units
 decE x = dec $ x ./ exa
 decP x = dec $ x ./ peta
 decT x = dec $ x ./ tera
@@ -461,18 +576,10 @@ decM x = dec $ x ./ mega
 decK x = dec $ x ./ kilo
 
 -- | Signed decimal formatting
--- signed :: Hex -> String
---
--- >>> 0xffffffffffffffff .@signed
--- "-1"
+signed :: Hex -> String
 signed x = show (fromIntegral x :: Int)
 
 -- | Strip strings
---
--- >>> strip "0b" "0b1101"
--- "1101"
--- >>> strip "_" "0x1234_5678_9abc_def0"
--- "0x123456789abcdef0"
 strip :: String -> String -> String
 strip "" xs  = xs
 strip pat [] = ""
@@ -504,12 +611,23 @@ insertUnderScore n xs = insertElemBy "_" n xs
 -- Pretty print
 ------------------------------------------------------------------------
 
--- | Display in color specified bits
--- >> test1 .@color (bit 7)
--- >> test1 .@color 0xf0
--- >> test1 .@color giga
--- >> test1 .@color (bitList [54,53,4,3,2])
--- >> test1 .@color (bits 63 51 .| bits 11 2)
+-- | Highlight the specified bit
+--
+-- > ghci> 0xff .@color (bits 7 4)
+-- > 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_1111_1111
+-- >                                                                         ^^^^
+--
+-- > ghci> 0xffffffff .@color mega
+-- > 0b0000_0000_0000_0000_0000_0000_0000_0000_1111_1111_1111_1111_1111_1111_1111_1111
+-- >                                                        ^
+--
+-- > ghci> 0 .@color (bitList [54,53,4,3,2])
+-- > 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000
+-- >              ^^                                                            ^ ^^
+
+-- > ghci> 0xffff .@color (bitList [54,53,4,3,2])
+--
+-- > ghci> 0xffff .@color (bits 63 51 .| bits 11 2)
 color :: Hex -> Hex -> IO ()
 color x2 x1 = putStrLn $ pprColorBin x1 x2
 
@@ -539,7 +657,7 @@ putColor (x1,x2)
 insertUnderScoreList :: Int -> [String] -> String
 insertUnderScoreList n = concat . insertElemBy ["_"] n
 
--- | Output with IO
+-- | Output value by IO (not String)
 --
 -- >>> 0xf0 .@ppr bin
 -- 0b1111_0000
@@ -552,6 +670,12 @@ ppr f x = putStrLn $ f x
 ------------------------------------------------------------------------
 
 -- | Input hexadecimal string and convert to Hex type
+--
+-- > ghci> inputRawHexIO
+-- > ff aa  (your input)
+-- > ghci>x = it
+-- > ghci>x
+-- > 0x0000_0000_0000_ffaa
 inputRawHexIO :: IO Hex
 inputRawHexIO = do
     x <- getLine
