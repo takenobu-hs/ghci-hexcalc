@@ -834,6 +834,8 @@ colorReset = "\ESC[0m"
 -- prop> ((x ./ y)*y + (x .% y)) == x
 -- prop> when (n >= 0 && x `testBit` n) $ ((signext x n) .| (sbits x (n-1) 0)) == all1
 -- prop> when (n >= 0 && (not(x `testBit` n))) $ ((signext x n) .& (cbits x (n-1) 0)) == all0
+-- prop> when (not(x `testBit` (hexBitSize-1))) $ (signed x) == (dec x)
+-- prop> when (x `testBit` (hexBitSize-1)) $ (signed x) == show(-1 * (fromIntegral $ ((inv x) + 1))::Int)
 --
 -- prop> when (n >= 0) $ (x .<< n) == (x * (2^n))
 -- prop> when (n >= 0) $ (x .>> n) == (bitrev ((bitrev x) .<< n))
