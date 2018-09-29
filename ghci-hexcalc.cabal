@@ -1,0 +1,29 @@
+name:                ghci-hexcalc
+version:             0.1.0.0
+synopsis:            GHCi as a Hex Calculator interactive
+description:         This is an interactive hex-calculator using Haskell/GHCi.
+homepage:            https://github.com/takenobu-hs/ghci-hexcalc
+license:             BSD3
+license-file:        LICENSE
+author:              Takenobu Tani
+maintainer:          takenobu.hs@gmail.com
+copyright:           2018 Takenobu Tani
+category:            Data
+build-type:          Simple
+extra-source-files:  ChangeLog.md,
+                     README.md
+cabal-version:       >=1.10
+
+source-repository head
+  type:     git
+  location: https://github.com/takenobu-hs/ghci-hexcalc.git
+
+library
+  exposed-modules:     Data.GHex
+  -- other-modules:
+  other-extensions:    GeneralizedNewtypeDeriving,
+                       BangPatterns,
+                       BinaryLiterals
+  build-depends:       base >=4.7 && <5
+  hs-source-dirs:      src
+  default-language:    Haskell2010
