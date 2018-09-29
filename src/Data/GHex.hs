@@ -831,14 +831,10 @@ colorReset = "\ESC[0m"
 -- prop> (x .& y) == (inv ((inv x) .| (inv y)))             -- De Morgan
 -- prop> (x .^ y) == (((x .& (inv y)) .| ((inv x) .& y)))   -- xor
 --
--- prop> ((x ./ y)*y + (x .% y)) == x
--- prop> when (n >= 0 && x `testBit` n) $ ((signext x n) .| (sbits x (n-1) 0)) == all1
--- prop> when (n >= 0 && (not(x `testBit` n))) $ ((signext x n) .& (cbits x (n-1) 0)) == all0
--- prop> when (not(x `testBit` (hexBitSize-1))) $ (signed x) == (dec x)
--- prop> when (x `testBit` (hexBitSize-1)) $ (signed x) == show(-1 * (fromIntegral $ ((inv x) + 1))::Int)
+-- prop> ((x ./ y)*y + (x .% y)) == x                       -- div and mod
 --
--- prop> when (n >= 0) $ (x .<< n) == (x * (2^n))
--- prop> when (n >= 0) $ (x .>> n) == (bitrev ((bitrev x) .<< n))
+-- prop> when (n >= 0) $ (x .<< n) == (x * (2^n))                 -- left shift
+-- prop> when (n >= 0) $ (x .>> n) == (bitrev ((bitrev x) .<< n)) -- right shift
 --
 -- prop> when (x >= 0) $ (bit1 x) == (2^x)
 -- prop> when (x >= 0) $ (byte1 x) == (0xff .<< (8*x))
@@ -865,3 +861,8 @@ colorReset = "\ESC[0m"
 -- prop> (mergeBytes $ splitBytes x) == x
 -- prop> (bitrev $ bitrev x) == x
 -- prop> (byterev $ byterev x) == x
+--
+-- prop> when (n >= 0 && x `testBit` n) $ ((signext x n) .| (sbits x (n-1) 0)) == all1
+-- prop> when (n >= 0 && (not(x `testBit` n))) $ ((signext x n) .& (cbits x (n-1) 0)) == all0
+-- prop> when (not(x `testBit` (hexBitSize-1))) $ (signed x) == (dec x)
+-- prop> when (x `testBit` (hexBitSize-1)) $ (signed x) == show(-1 * (fromIntegral $ ((inv x) + 1))::Int)
