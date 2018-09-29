@@ -195,10 +195,12 @@ neg = negate
 --
 -- >>> signext 0x80 7
 -- 0xffff_ffff_ffff_ff80
+-- >>> signext 0x7fff 15
+-- 0x0000_0000_0000_7fff
 signext :: Hex -> Int -> Hex
 signext x n
-  | testBit x n = (bits (hexBitSize-1) n)
-  | otherwise   = x
+  | testBit x n = sbits x (hexBitSize-1) n
+  | otherwise   = cbits x (hexBitSize-1) n
 
 
 ------------------------------------------------------------------------
@@ -830,6 +832,8 @@ colorReset = "\ESC[0m"
 -- prop> (x .^ y) == (((x .& (inv y)) .| ((inv x) .& y)))   -- xor
 --
 -- prop> ((x ./ y)*y + (x .% y)) == x
+-- prop> when (n >= 0 && x `testBit` n) $ ((signext x n) .| (sbits x (n-1) 0)) == all1
+-- prop> when (n >= 0 && (not(x `testBit` n))) $ ((signext x n) .& (cbits x (n-1) 0)) == all0
 --
 -- prop> when (n >= 0) $ (x .<< n) == (x * (2^n))
 -- prop> when (n >= 0) $ (x .>> n) == (bitrev ((bitrev x) .<< n))
