@@ -3,8 +3,8 @@
 GHCi as a Hex-Calculator interactive
 ====================================
 
-The GHCi (REPL for Haskell) is a very useful interactive tool, it's not only for debugging ;)  
-This package `ghci-hexcalc` is an interactive hex-calculator using Haskell/GHCi.
+The GHCi (REPL for Haskell) is a very useful interactive tool, it's not only for debugging.  
+This package "ghci-hexcalc" is an interactive hex-calculator using Haskell/GHCi.
 This is a simple and casual tool like Perl and Excel for our daily work.
 
 See also [description on Hackage](https://hackage.haskell.org/package/ghci-hexcalc).
@@ -21,12 +21,12 @@ Run
 ---
 
 Bare GHCi:
-```bash
+```
 $ ghci src/Data/GHex.hs
 ```
 
 Stack:
-```bash
+```
 $ stack exec -- ghci  src/Data/GHex.hs
 ```
 
@@ -284,7 +284,8 @@ ghci> (x .<< 4) .& 0xf0
 ghci> bit1 33 ./ giga
 ghci> 2 * mega .@dec
 ghci> 4 * tera .@pos1
-ghci> foldr (.|) [0xa, 0xcc, 0xd1b]
+ghci> foldr1 (.|) [0xa, 0xcc, 0xd1b]
+ghci> 0 .@color (tera .| giga .| mega .| kilo)
 ```
 
 #### Using Data.Bits library
@@ -293,6 +294,7 @@ ghci> foldr (.|) [0xa, 0xcc, 0xd1b]
 ghci> x `testBit` 8
 ghci> x `clearBit` 15
 ghci> x .&. 0xff
+ghci> countLeadingZeros (0xff ::Hex)
 ```
 
 #### Clear screen
@@ -442,7 +444,8 @@ You could also refer to [Hackage document](http://hackage.haskell.org/package/gh
 |:------------------------------|:--------------------------------------|
 | `pos1` x1                     | Get bit positions asserted with 1     |
 | `pos0` x1                     | Get bit positions asserted with 0     |
-| `range` x1                    | Get upper and lower boundaries       |
+|                               |                                       |
+| `range` x1                    | Get upper and lower boundaries        |
 
 
 #### Permute
@@ -451,6 +454,7 @@ You could also refer to [Hackage document](http://hackage.haskell.org/package/gh
 |:------------------------------|:--------------------------------------|
 | `bitrev` x1                   | Reverse bits                          |
 | `byterev` x1                  | Reverse bytes                         |
+|                               |                                       |
 | `gather` x1 x2                | Gather bits from x1 by x2             |
 
 
@@ -560,7 +564,7 @@ $ ghci -XBinaryLiterals -XNumericUnderscores
 
 It is useful to set the alias of the shell:
 ```bash
-alias ghex="ghci $XX/src/Data/GHex.hs"
+alias ghex="ghci  -haddock $XX/src/Data/GHex.hs"
 ```
 
 
