@@ -24,6 +24,10 @@ Bare GHCi:
 ```
 $ ghci src/Data/GHex.hs
 ```
+or
+```
+$ ghci -ghci-script example/example.ghci
+```
 
 Stack:
 ```
