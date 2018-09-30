@@ -783,11 +783,6 @@ splitN n xs = as : splitN n bs
 insertElemBy :: [a] -> Int -> [a] -> [a]
 insertElemBy s n = reverse . intercalate s . splitN n .reverse
 
------ Warning message
-
--- | (!) IO output of string in pure code
-traceWarn :: String -> a -> a
-traceWarn str x = trace (colorMagenta ++ str ++ colorReset) x
 
 ----- ANSI Escape sequences
 
@@ -802,6 +797,14 @@ colorInv = "\ESC[7m"
 -- | Reset attribute
 colorReset :: String
 colorReset = "\ESC[0m"
+
+
+----- Warning message
+
+-- | (!) IO output of string in pure code
+traceWarn :: String -> a -> a
+traceWarn str x = trace (colorMagenta ++ str ++ colorReset) x
+
 
 ------------------------------------------------------------------------
 -- Property test with quickcheck
