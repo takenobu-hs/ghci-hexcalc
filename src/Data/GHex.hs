@@ -776,7 +776,6 @@ cls = putStr $ clearLines ++ gotoHead
       gotoHead   = "\ESC[0;0H"
 
 -- | Show simple usage
--- ToDo:
 usage :: IO ()
 usage = putStr $
           " -- Commands by ghci:\n" ++
