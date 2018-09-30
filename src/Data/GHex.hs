@@ -36,15 +36,15 @@ module Data.GHex (
     -- ** Generate bits and bytes with position
     bit1, bits, bitList, byte1, bytes, mask,
 
-    -- ** Get asserted bit positions
-    pos1, pos0, range1,
-
     -- ** Extract and replace bits
     gets, puts, getBit1, getByte1, getBits, getBytes,
     putBit1, putBits, putBytes,
 
     -- ** Set and clear bits
     sbits, cbits,
+
+    -- ** Get asserted bit positions
+    pos1, pos0, range1,
 
     -- ** Permute
     bitrev, byterev,
