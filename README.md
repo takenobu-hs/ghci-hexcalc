@@ -323,7 +323,7 @@ inv :: Hex -> Hex
   :
 ```
 
-When you run with `ghci -haddock`, you could also use `:doc` ghci command:
+When you run with `ghci -haddock`, you could also use `:doc` ghci command (ghc8.6 or later):
 
 ```
 ghci> :doc bits
