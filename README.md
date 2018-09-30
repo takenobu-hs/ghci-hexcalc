@@ -12,7 +12,7 @@ See also [description on Hackage](https://hackage.haskell.org/package/ghci-hexca
 Contents:
 
   * [Run](#run)
-  * [Example](#example)
+  * [Example of use](#example-of-use)
   * [Specification](#specification)
   * [Appendix](#appendix)
 
@@ -35,8 +35,8 @@ $ stack exec -- ghci  src/Data/GHex.hs
 ```
 
 
-Example
--------
+Example of use
+--------------
 
 #### Numeric literals by `Hex` type annotation
 
