@@ -463,11 +463,23 @@ mergeBytes xs = foldl' f 0 xs
 -- True
 -- >>> kilo == 2^10
 -- True
+
+-- | Ei: 2^60
 exa  = bit 60 :: Hex
+
+-- | Pi: 2^50
 peta = bit 50 :: Hex
+
+-- | Ti: 2^40
 tera = bit 40 :: Hex
+
+-- | Gi: 2^30
 giga = bit 30 :: Hex
+
+-- | Mi: 2^20
 mega = bit 20 :: Hex
+
+-- | Ki: 2^10
 kilo = bit 10 :: Hex
 
 -- $constants_unitity
@@ -479,9 +491,17 @@ kilo = bit 10 :: Hex
 -- 0x0000_0000_0000_0000
 -- >>> all1
 -- 0xffff_ffff_ffff_ffff
+
+-- | 0x0
 zero = 0 :: Hex
+
+-- | 0x1
 one  = 1 :: Hex
+
+-- | 0x0
 all0 = zero :: Hex
+
+-- | inv 0x0
 all1 = inv zero :: Hex
 
 -- Numbers for test
@@ -559,42 +579,58 @@ x .@ f = f x
 -- >>> strip "_" "0x1234_5678_9abc_def0"
 -- "0x123456789abcdef0"
 
--- Hexadecimal formatting
+-- | Hexadecimal formatting with maximum-bit length
 hex :: Hex -> String
 hex = hex64
 
+-- | Hexadecimal formatting with N-bit length
 hexN :: Int -> Hex -> String
 hexN = formatHex "x"
 
 hex8, hex16, hex32, hex64 :: Hex -> String
+-- | Hexadecimal formatting with 8-bit length
 hex8  = hexN 2
+-- | Hexadecimal formatting with 16-bit length
 hex16 = hexN 4
+-- | Hexadecimal formatting with 32-bit length
 hex32 = hexN 8
+-- | Hexadecimal formatting with 64-bit length
 hex64 = hexN 16
 
--- Binary formatting
+-- | Binary formatting with auto-adjusted length
 bin :: Hex -> String
 bin = binN 0
 
+-- | Binary formatting with N-bit length
 binN :: Int -> Hex -> String
 binN = formatHex "b"
 
 bin8, bin16, bin32, bin64 :: Hex -> String
+-- | Binary formatting with 8-bit length
 bin8  = binN 8
+-- | Binary formatting with 16-bit length
 bin16 = binN 16
+-- | Binary formatting with 32-bit length
 bin32 = binN 32
+-- | Binary formatting with 64-bit length
 bin64 = binN 64
 
--- Decimal formatting
+-- | Decimal formatting
 dec :: Hex -> String
 dec (Hex x) = show x
 
 -- Decimal formatting with units
+-- | Decimal formatting with exa unit
 decE x = dec $ x ./ exa
+-- | Decimal formatting with pata unit
 decP x = dec $ x ./ peta
+-- | Decimal formatting with tera unit
 decT x = dec $ x ./ tera
+-- | Decimal formatting with giga unit
 decG x = dec $ x ./ giga
+-- | Decimal formatting with mega unit
 decM x = dec $ x ./ mega
+-- | Decimal formatting with kilo unit
 decK x = dec $ x ./ kilo
 
 -- | Signed decimal formatting
