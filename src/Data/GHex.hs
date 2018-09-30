@@ -270,33 +270,6 @@ mask n = bits n 0
 
 
 ------------------------------------------------------------------------
--- Get asserted bit positions
-------------------------------------------------------------------------
-
--- | Get bit positions asserted with 1
---
--- >>> pos1 0x0080
--- [7]
-pos1 :: Hex -> [Int]
-pos1 x = bitSearch testBit x hexBitSeq
-
--- | Get bit positions asserted with 0
---
--- >>> pos0 $ inv 0x0100
--- [8]
-pos0 :: Hex -> [Int]
-pos0 x = bitSearch testBit (inv x) hexBitSeq
-
--- | Get upper and lower boundaries of asserted bits
---
--- >>> range1 0x0f000000
--- (27,24)
-range1 :: Hex -> (Int,Int)
-range1 x = let y = pos1 x
-           in  (head y, last y)
-
-
-------------------------------------------------------------------------
 -- Extract and replace bits
 ------------------------------------------------------------------------
 
@@ -381,6 +354,33 @@ sbits x upper lower = x .| (bits upper lower)
 -- 0x0000_0000_0000_1204
 cbits :: Hex -> Int -> Int -> Hex
 cbits x upper lower = x .& (inv (bits upper lower))
+
+
+------------------------------------------------------------------------
+-- Get asserted bit positions
+------------------------------------------------------------------------
+
+-- | Get bit positions asserted with 1
+--
+-- >>> pos1 0x0080
+-- [7]
+pos1 :: Hex -> [Int]
+pos1 x = bitSearch testBit x hexBitSeq
+
+-- | Get bit positions asserted with 0
+--
+-- >>> pos0 $ inv 0x0100
+-- [8]
+pos0 :: Hex -> [Int]
+pos0 x = bitSearch testBit (inv x) hexBitSeq
+
+-- | Get upper and lower boundaries of asserted bits
+--
+-- >>> range1 0x0f000000
+-- (27,24)
+range1 :: Hex -> (Int,Int)
+range1 x = let y = pos1 x
+           in  (head y, last y)
 
 
 ------------------------------------------------------------------------
