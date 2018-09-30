@@ -3,8 +3,11 @@
 GHCi as a Hex-Calculator interactive
 ====================================
 
-This is an interactive hex-calculator using Haskell/GHCi.  
-This is a simple and casual interactive tool like Perl and Excel for daily work.
+The GHCi (REPL for Haskell) is a very useful interactive tool, it's not only for debugging ;)  
+This package `ghci-hexcalc` is an interactive hex-calculator using Haskell/GHCi.
+This is a simple and casual tool like Perl and Excel for our daily work.
+
+See also [description on Hackage](https://hackage.haskell.org/package/ghci-hexcalc).
 
 Contents:
 
@@ -24,7 +27,7 @@ $ ghci src/Data/GHex.hs
 
 Stack:
 ```bash
-$ stack ghci -- src/Data/GHex.hs
+$ stack exec -- ghci  src/Data/GHex.hs
 ```
 
 
@@ -36,13 +39,19 @@ Example
 ```
 ghci> 1 :: Hex
 0x0000_0000_0000_0001
+```
 
+```
 ghci> 0xff :: Hex
 0x0000_0000_0000_00ff
+```
 
+```
 ghci> 0b1011 :: Hex
 0x0000_0000_0000_000b
+```
 
+```
 ghci> 16 + 3 :: Hex
 0x0000_0000_0000_0013
 ```
@@ -52,7 +61,7 @@ ghci> 16 + 3 :: Hex
 ```
 ghci> x = 255 :: Hex
 ghci> x + 3
-ghci> y = it
+ghci> y = it       -- `it` is GHCi's variable. It stores the previous result.
 ```
 
 #### Arithmetic operations
@@ -61,6 +70,7 @@ ghci> y = it
 ghci> x + 3
 ghci> (x * 256) -1
 ghci> x + 2^10
+ghci> neg x
 ```
 
 #### Logical operations
@@ -68,7 +78,7 @@ ghci> x + 2^10
 ```
 ghci> 0xff .& 6
 ghci> 256 .| 16
-ghci> 100 .^ 0b0101
+ghci> 100 .^ 5
 ghci> inv 255
 ```
 
@@ -91,50 +101,180 @@ ghci> 0xfedc .% 256
 
 ```
 ghci> bit1 15
+0x0000_0000_0000_8000
+```
+
+```
 ghci> bits 7 4
+0x0000_0000_0000_00f0
+```
+
+```
 ghci> bitList [15, 14, 1]
+0x0000_0000_0000_c002
+```
+
+```
 ghci> byte1 2
+0x0000_0000_00ff_0000
+```
+
+```
 ghci> bytes 4 3
+0x0000_00ff_ff00_0000
 ```
 
 #### Extract and replace bits
 ```
-ghci> gets x 7 4
-ghci> puts x 7 4 0b1101
+ghci> gets 0xabcd 15 12
+0x0000_0000_0000_000a
 ```
+```
+ghci> puts 0xabcd 15 12 7
+0x0000_0000_0000_7bcd
+```
+
+#### Set and clear bits
+
+```
+ghci> sbits 0x1234 11 8
+0x0000_0000_0000_1f34
+```
+
+```
+ghci> cbits 0x1234 7 4
+0x0000_0000_0000_1204
+```
+
 
 #### Get asserted bit positions
 
 ```
-ghci> pos1 x
-ghci> pos0 y
-ghci> x .@pos1
+ghci> pos1 0x0081
+[7,0]
 ```
+
+```
+ghci>  pos0 $ inv 0x0100
+[8]
+```
+
 
 #### Predefined-constants
 
 ```
 ghci> mega
+0x0000_0000_0010_0000
+```
+
+```
 ghci> giga
+0x0000_0000_4000_0000
+```
+
+```
 ghci> 4 * giga - 1
-ghci> x ./ giga
+0x0000_0000_ffff_ffff
 ```
 
-#### Clear screen
+```
+ghci> 2^32 ./ giga
+0x0000_0000_0000_0004
+```
+
+#### Postfix-notation
+
+This operator `.@` is an operator for postfix notation.
+It's the same as `Data.Function.(&)`.
+
+The following two are the same:
 
 ```
-ghci> cls
+ghci> pos1 0xf0
+[7,6,5,4]
 ```
 
-#### Postfix-notation for hex, bin, dec and Tera/Giga/Mega/Kilo formatting
+```
+ghci> 0xf0 .@pos1
+[7,6,5,4]
+```
+
+
+#### Formatting for hex, bin, dec, Tera/Giga/Mega/Kilo and signed
+
+```
+ghci> 2^16 .@hex
+"0x0000_0000_0001_0000"
+```
 
 ```
 ghci> 100 .@bin
-ghci> 2^16 .@hex
-ghci> 4 * giga .@dec
-ghci> x .@decG
-ghci> bit 43 .@decT
+"0b110_0100"
 ```
+
+```
+ghci> 100 .@bin16
+"0b0000_0000_0110_0100"
+```
+
+```
+ghci> giga .@dec
+"1073741824"
+```
+
+```
+ghci> bit 43 .@decT
+"8"
+```
+
+```
+ghci> 0xffffffffffffffff .@signed
+"-1"
+```
+
+
+#### Hilighting specified bits
+
+Function `color` highlights the specified bit. This inverts the color in the ANSI sequence for the specified bit.
+
+```
+ghci> 0xff .@color (bits 7 4)
+0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_1111_1111
+                                                                        ^^^^
+```
+
+```
+ghci> 0xffffffff .@color mega
+0b0000_0000_0000_0000_0000_0000_0000_0000_1111_1111_1111_1111_1111_1111_1111_1111
+                                                       ^
+```
+
+```
+ghci> 0 .@color (bitList [54,53,4,3,2])
+0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000
+             ^^                                                            ^ ^^
+```
+
+
+#### Input & convert
+
+Function `inputRawHexIO`  inputs string and converts it to Hex type.
+
+```
+ghci> inputRawHexIO
+ff aa  (your input)
+ghci> x = it
+ghci> x
+0x0000_0000_0000_ffaa
+```
+
+```
+ghci> x <- inputRawHexIO
+ff aa  (your input)
+ghci> x
+0x0000_0000_0000_ffaa
+```
+
 
 #### Combination examples
 
@@ -155,21 +295,47 @@ ghci> x `clearBit` 15
 ghci> x .&. 0xff
 ```
 
+#### Clear screen
+
+```
+ghci> cls
+```
+
 #### Simple help
+
+Show simple usage:
 
 ```
 ghci> usage
 ```
 
-####  Execution by a expression evaluation mode of GHC (`ghc -e`)
+Listing APIs with `:browse` ghci command:
 
-```bash
-$ ghc -e '4 * giga .@pos1'
+```
+ghci> :browse
+newtype Hex = Hex Word
+(.&) :: Hex -> Hex -> Hex
+(.|) :: Hex -> Hex -> Hex
+(.^) :: Hex -> Hex -> Hex
+inv :: Hex -> Hex
+  :
+```
+
+When you run with `ghci -haddock`, you could also use `:doc` ghci command:
+
+```
+ghci> :doc bits
+ Set bits from n1 to n2
+
+ >>> bits 15 8
+ 0x0000_0000_0000_ff00
 ```
 
 
 Specification
 -------------
+
+You could also refer to [Hackage document](http://hackage.haskell.org/package/ghci-hexcalc/docs/Data-GHex.html) in detail.
 
 #### General
 
@@ -198,12 +364,20 @@ Specification
 | Many operations               | Eq, Ord, Num, Enum, Real, Bounded, Integral, Bits and FiniteBits class available  |
 
 
+#### Postfix operator
+
+| Operation                     | Description                           |
+|:------------------------------|:--------------------------------------|
+| `.@`                          | Postfix-notation operator             |
+
+
 #### Arithmetic operations
 
 | Operation                     | Description                           |
 |:------------------------------|:--------------------------------------|
 | `+`, `-`, `*`, `^`, ...       | Num, Real class available             |
 | `neg` x1                      | Negation. (inv x1 + 1)                |
+| `signext` x1 n1               | Sign extention                        |
 | x1 `./` x2                    | Integer division                      |
 | x1 `.%` x2                    | Integer modulo                        |
 
@@ -233,17 +407,9 @@ Specification
 | `bit1` n1                     | Set a bit                             |
 | `bits` n1 n2                  | Set bits from n1 to n2                |
 | `bitList` [n1, n2, ... nn]    | Set bits with List                    |
-| `mask` n1                     | Set bits from 0 to n1                 |
 | `byte1` n1                    | Set a byte                            |
 | `bytes` n1 n2                 | Set bytes from n1 to n2               |
-
-
-#### Get asserted bit positions
-
-| Operation                     | Description                           |
-|:------------------------------|:--------------------------------------|
-| `pos1` x1                     | Get bit positions asserted with 1      |
-| `pos0` x1                     | Get bit positions asserted with 0      |
+| `mask` n1                     | Set bits from 0 to n1                 |
 
 
 #### Extract and replace bits
@@ -253,9 +419,12 @@ Specification
 | `gets` x1 n1 n2               | Extract bits from n1 to n2            |
 | `puts` x1 n1 n2 x2            | Replace bits from n1 to n2            |
 |                               |                                       |
-| `getBits` x1 n1 n2            | Synonym to gets                       |
+| `getBit1`  x1 n1              | Extract bit at n1                     |
+| `getBits`  x1 n1 n2           | Synonym to gets                       |
+| `getByte1` x1 n1              | Extract bytes from n1 to 0            |
 | `getBytes` x1 n1 n2           | Extract bytes from n1 to n2           |
-| `putBits` x1 n1 n2 x2         | Synonym to puts                       |
+| `putBit1`  x1 n1 x2           | Replace byte at n1                    |
+| `putBits`  x1 n1 n2 x2        | Synonym to puts                       |
 | `putBytes` x1 n1 n2 x2        | Replace bytes from n1 to n2           |
 
 
@@ -267,12 +436,22 @@ Specification
 | `cbits` x1 n1 n2              | Clear bits from n1 to n2 of x1        |
 
 
+#### Get asserted bit positions
+
+| Operation                     | Description                           |
+|:------------------------------|:--------------------------------------|
+| `pos1` x1                     | Get bit positions asserted with 1     |
+| `pos0` x1                     | Get bit positions asserted with 0     |
+| `range` x1                    | Get upper and lower boundaries       |
+
+
 #### Permute
 
 | Operation                     | Description                           |
 |:------------------------------|:--------------------------------------|
 | `bitrev` x1                   | Reverse bits                          |
 | `byterev` x1                  | Reverse bytes                         |
+| `gather` x1 x2                | Gather bits from x1 by x2             |
 
 
 #### Split and merge
@@ -305,30 +484,46 @@ Specification
 | `hexBitSeq`                   | [hexBitSize-1, hexBitSize-2, .. 0]    |
 
 
-#### Postfix-notation for hex, bin, dec and T/G/M/K unit formatting
+#### Formatting for hex, bin, dec, Tera/Giga/Mega/Kilo and signed
 
 | Operation                     | Description                           |
 |:------------------------------|:--------------------------------------|
 | `.@hex`                       | Show in hexadecimal string            |
-| `.@bin`                       | Show in binary string                 |
-| `.@dec`                       | Show in decimal string                |
-| `.@decT`                      | Show in decimal of Tera unit          |
-| `.@decG`                      | Show in decimal of Giga unit          |
-| `.@decM`                      | Show in decimal of Mega unit          |
-| `.@decK`                      | Show in decimal of Kilo unit          |
-|                               |                                       |
 | `.@hex8`                      | Show in binary string of 8bit         |
 | `.@hex16`                     | Show in binary string of 16bit        |
 | `.@hex32`                     | Show in binary string of 32bit        |
 | `.@hex64`                     | Show in binary string of 64bit        |
 | `.@hexN` n1                   | Show in binary string of n1 bit       |
+|                               |                                       |
+| `.@bin`                       | Show in binary string                 |
 | `.@bin8`                      | Show in binary string of 8bit         |
 | `.@bin16`                     | Show in binary string of 16bit        |
 | `.@bin32`                     | Show in binary string of 32bit        |
 | `.@bin64`                     | Show in binary string of 64bit        |
 | `.@binN` n1                   | Show in binary string of n1 bit       |
 |                               |                                       |
+| `.@dec`                       | Show in decimal string                |
+| `.@decT`                      | Show in decimal of Tera unit          |
+| `.@decG`                      | Show in decimal of Giga unit          |
+| `.@decM`                      | Show in decimal of Mega unit          |
+| `.@decK`                      | Show in decimal of Kilo unit          |
+|                               |                                       |
 | `.@signed`                    | Show in singed decimal with `Word`    |
+
+
+#### Pretty print
+
+| Operation                     | Description                           |
+|:------------------------------|:--------------------------------------|
+| `color` x1 x2                 | Highlight bit of x1 specified with x2 |
+| `ppr` f1 x1                   | Print x1 applied with f1              |
+
+
+#### Input & convert
+
+| Operation                     | Description                           |
+|:------------------------------|:--------------------------------------|
+| `inputRawHexIO`               | Input string and convert to Hex type  |
 
 
 #### Miscellaneous
