@@ -40,6 +40,8 @@ Example of use
 
 #### Numeric literals by `Hex` type annotation
 
+The value of Hex type is shown as hexadecimal format.
+
 ```
 ghci> 1 :: Hex
 0x0000_0000_0000_0001
@@ -62,6 +64,8 @@ ghci> 16 + 3 :: Hex
 
 #### Variables on GHCi
 
+You could use variables of Haskell syntax on GHCi.
+
 ```
 ghci> x = 255 :: Hex
 ghci> x + 3
@@ -69,6 +73,8 @@ ghci> y = it       -- `it` is GHCi's variable. It stores the previous result.
 ```
 
 #### Arithmetic operations
+
+You could also use arithmetic operator in Hex type.
 
 ```
 ghci> x + 3
@@ -78,6 +84,8 @@ ghci> neg x
 ```
 
 #### Logical operations
+
+Numeric literals applied to function of this package is inferred as B type.
 
 ```
 ghci> 0xff .& 6
@@ -188,7 +196,7 @@ ghci> 2^32 ./ giga
 
 #### Postfix-notation
 
-This operator `.@` is an operator for postfix notation.
+The operator `.@` is an operator for postfix notation.
 It's the same as `Data.Function.(&)`.
 
 The following two are the same:
@@ -205,6 +213,8 @@ ghci> 0xf0 .@pos1
 
 
 #### Formatting for hex, bin, dec, Tera/Giga/Mega/Kilo and signed
+
+Formatting functions convert a Hex type value to a string type for each format.  
 
 ```
 ghci> 2^16 .@hex
@@ -239,7 +249,7 @@ ghci> 0xffffffffffffffff .@signed
 
 #### Hilighting specified bits
 
-Function `color` highlights the specified bit. This inverts the color in the ANSI sequence for the specified bit.
+The function `color` highlights specified bits. It inverts the color in the ANSI sequence for the specified bits.
 
 ```
 ghci> 0xff .@color (bits 7 4)
@@ -262,7 +272,7 @@ ghci> 0 .@color (bitList [54,53,4,3,2])
 
 #### Input & convert
 
-Function `inputRawHexIO`  inputs string and converts it to Hex type.
+The function `inputRawHexIO`  inputs a string and converts it to a Hex type.
 
 ```
 ghci> inputRawHexIO
@@ -293,6 +303,8 @@ ghci> 0 .@color (tera .| giga .| mega .| kilo)
 ```
 
 #### Using Data.Bits library
+
+Hex type is deriving Data.Bits type. So you could use functions of Data.Bits.
 
 ```
 ghci> x `testBit` 8
@@ -341,12 +353,12 @@ ghci> :doc bits
 Specification
 -------------
 
-You could also refer to [Hackage document](http://hackage.haskell.org/package/ghci-hexcalc/docs/Data-GHex.html) in detail.
+Please see also [Hackage document](http://hackage.haskell.org/package/ghci-hexcalc/docs/Data-GHex.html) in detail.
 
 #### General
 
 * Core type:
-  * The core type of this package is `Hex` type.
+  * The core type of this package is the `Hex` type.
   * `Hex` type is implemented in unsigned `Word`.
   * `Hex` type is 64 bit length on x86_64.
 * Operators:
