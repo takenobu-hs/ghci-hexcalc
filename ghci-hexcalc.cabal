@@ -11,7 +11,8 @@ copyright:           2018 Takenobu Tani
 category:            Data
 build-type:          Simple
 extra-source-files:  ChangeLog.md,
-                     README.md
+                     README.md,
+                     example/example.ghci
 cabal-version:       >=1.10
 
 source-repository head
@@ -20,7 +21,6 @@ source-repository head
 
 library
   exposed-modules:     Data.GHex
-  -- other-modules:
   other-extensions:    GeneralizedNewtypeDeriving,
                        BangPatterns,
                        BinaryLiterals

@@ -1,0 +1,24 @@
+--
+-- run this:
+--  $ ghci -ghci-script example/example.ghci
+--
+
+-- setting GHC extention of literals for GHCi operation
+:set -XBinaryLiterals
+:set -XNumericUnderscores
+
+-- setting prompt
+:set prompt "ghex> "
+:set prompt-cont "ghex| "
+
+-- setting haddok option for `:doc` command
+:set -haddock
+
+-- load main module
+:load src/Data/GHex.hs
+
+
+-- example for your utility
+units = zero .@color (tera .| giga .| mega .| kilo)
+virtual_address = bits 31 15
+control_enable = bit1 3
