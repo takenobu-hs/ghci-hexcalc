@@ -779,9 +779,26 @@ cls = putStr $ clearLines ++ gotoHead
 -- ToDo:
 usage :: IO ()
 usage = putStr $
-          "Example:\n" ++
-          "  ghci> 15 :: Hex\n" ++
-          ""
+          " -- Commands by ghci:\n" ++
+          "   :browse                     show function list\n" ++
+          "   :doc <function>             show document of function\n" ++
+          "\n" ++
+          " -- Examples:\n" ++
+          "   x = 15 :: Hex               annotate Hex type\n" ++
+          "   y = it                      set previous result\n" ++
+          "   2^16 + 3 :: Hex             arithmetic operation\n" ++
+          "   (1 .<< 16) .| 0xf .& 3      logical operation\n" ++
+          "   (inv 0xffff) .^ 0xff        logical operation\n" ++
+          "   bits 15 2                   set bits from 15 to 2\n" ++
+          "   bitList [15, 8, 1]          set bits by List\n" ++
+          "   gets 0xabcd 15 12           get bits from 15 to 12\n" ++
+          "   puts 0xabcd 15 12 7         replace bits from 15 to 12 by 7\n" ++
+          "   4 * mega                    predefined constant\n" ++
+          "   0xffff .@bin                formatting in binary\n" ++
+          "   giga .@dec                  formatting in decimal\n" ++
+          "   0x0a00 .@pos1               get asserted bit positions\n" ++
+          "   0xff .@color (bits 7 4)     hilighting bit (7 to 4)\n" ++
+          "\n"
 
 
 ------------------------------------------------------------------------
