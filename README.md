@@ -509,11 +509,11 @@ Please see also [Hackage document](http://hackage.haskell.org/package/ghci-hexca
 | Operation                     | Description                           |
 |:------------------------------|:--------------------------------------|
 | `.@hex`                       | Show in hexadecimal string            |
-| `.@hex8`                      | Show in binary string of 8bit         |
-| `.@hex16`                     | Show in binary string of 16bit        |
-| `.@hex32`                     | Show in binary string of 32bit        |
-| `.@hex64`                     | Show in binary string of 64bit        |
-| `.@hexN` n1                   | Show in binary string of n1 bit       |
+| `.@hex8`                      | Show in hexadecimal string of 8bit    |
+| `.@hex16`                     | Show in hexadecimal string of 16bit   |
+| `.@hex32`                     | Show in hexadecimal string of 32bit   |
+| `.@hex64`                     | Show in hexadecimal string of 64bit   |
+| `.@hexN` n1                   | Show in hexadecimal string of n1-digit|
 |                               |                                       |
 | `.@bin`                       | Show in binary string                 |
 | `.@bin8`                      | Show in binary string of 8bit         |
@@ -550,7 +550,7 @@ Please see also [Hackage document](http://hackage.haskell.org/package/ghci-hexca
 
 | Operation                     | Description                           |
 |:------------------------------|:--------------------------------------|
-| `cls`                         | Clear screen on VT100 terminal       |
+| `cls`                         | Clear screen by ANSI sequence         |
 | `usage`                       | Show simple help                      |
 
 
