@@ -911,6 +911,7 @@ traceWarn str x = trace (colorMagenta ++ str ++ colorReset) x
 --
 -- prop> (x .@pos1 .@bitList) == x
 -- prop> (x .@pos0 .@bitList) == (inv x)
+-- prop> when (x1 >= x2 && x2 >= 0 && x1 < hexBitSize) $ (range1 $ bits x1 x2) == (x1,x2)
 --
 -- prop> (mergeBits $ splitBits x) == x
 -- prop> (mergeBytes $ splitBytes x) == x
