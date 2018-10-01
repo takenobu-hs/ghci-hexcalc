@@ -10,6 +10,7 @@ maintainer:          takenobu.hs@gmail.com
 copyright:           2018 Takenobu Tani
 category:            Data
 build-type:          Simple
+tested-with:         GHC==8.6.1, GHC==8.4.3
 extra-source-files:  ChangeLog.md,
                      README.md,
                      example/example.ghci
