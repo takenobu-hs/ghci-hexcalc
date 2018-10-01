@@ -6,7 +6,7 @@
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Data.GHex
--- Copyright   :  (c) Takenobu Tani
+-- Copyright   :  (c) 2018 Takenobu Tani
 -- License     :  BSD3
 --
 -- Maintainer  :  Takenobu Tani <takenobu.hs@gmail.com>
@@ -768,7 +768,7 @@ filterHexChar = filter (`elem` "0123456789abcdefABCDEF")
 -- Miscellaneous
 ------------------------------------------------------------------------
 
--- | Clear screen on VT100 terminal
+-- | Clear screen with ANSI sequences
 cls :: IO ()
 cls = putStr $ clearLines ++ gotoHead
     where
@@ -817,7 +817,7 @@ bitSearch p x (n:ns)
   | p x n     = n : (bitSearch p x ns)
   | otherwise = bitSearch p x ns
 
--- | Split element
+-- | Split element for each N
 --
 -- >>> splitN 2 [1,2,3,4,5,6,7]
 -- [[1,2],[3,4],[5,6],[7]]
