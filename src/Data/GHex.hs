@@ -284,7 +284,7 @@ gets x upper lower
 
 -- | Replace bits from n1 to n2
 --
--- >>> puts 0xabcd 15 12 7
+-- >>> puts 0xabcd 15 12 0b111
 -- 0x0000_0000_0000_7bcd
 puts :: Hex -> Int -> Int -> Hex -> Hex
 puts x1 upper lower x2
@@ -865,6 +865,7 @@ traceWarn str x = trace (colorMagenta ++ str ++ colorReset) x
 -- | Property test
 -- $setup
 -- >>> import Test.QuickCheck
+-- >>> :set -XBinaryLiterals
 -- >>> skip = True
 -- >>> when c x = if c then x else skip
 -- >>> :{
