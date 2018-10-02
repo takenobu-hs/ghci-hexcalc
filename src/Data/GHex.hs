@@ -48,7 +48,7 @@ module Data.GHex (
 
     -- ** Permute
     bitrev, byterev,
-    gather,
+    gather, scatter,
 
     -- ** Split and merge
     splitBits, splitBytes, mergeBits, mergeBytes,
@@ -408,6 +408,15 @@ byterev = mergeBytes . reverse . splitBytes
 gather :: Hex -> Hex -> Hex
 gather x1 x2 = let pairs = zip (splitBits x1) (splitBits x2)
                in  mergeBits $ map fst $ filter(\(x,y) -> y == 1) pairs
+
+-- | Scatter bits
+--
+-- >>> scatter 0x12345678 0xff00ff00 0xabcd
+-- 0x0000_0000_ab34_cd78
+scatter :: Hex -> Hex -> Hex -> Hex
+scatter x1 x2 x3 =
+    let pairs = zip (reverse $ pos1 x2) (reverse $ splitBits x3)
+    in  foldr (\(x,y) v -> putBit1 v x (fromIntegral y)) x1 pairs
 
 
 ------------------------------------------------------------------------
@@ -905,6 +914,7 @@ traceWarn str x = trace (colorMagenta ++ str ++ colorReset) x
 --
 -- prop> when (x1 >= x2 && x2 >= 0) $ (gather x (bits x1 x2)) == (gets x x1 x2)
 -- prop> when (x1 > x2 && x2 >= 0)  $ (gather x3 (bit1 x1 .| bit1 x2)) == (((getBit1 x3 x1) .<< 1) .| (getBit1 x3 x2))
+-- prop> when (x1 >= x2 && x2 >= 0) $ (scatter x1 x2 $ gather x1 x2) == x1
 --
 -- prop> when (x1 >= x2 && x2 >= 0) $ (sbits all0 x1 x2) == (bits x1 x2)
 -- prop> when (x1 >= x2 && x2 >= 0) $ (sbits all0 x1 x2) == (puts all0 x1 x2 all1)
