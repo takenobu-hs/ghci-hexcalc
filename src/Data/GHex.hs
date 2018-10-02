@@ -43,8 +43,9 @@ module Data.GHex (
     -- ** Set and clear bits
     sbits, cbits,
 
-    -- ** Get asserted bit positions
+    -- ** Get asserted bit positions and count bits
     pos1, pos0, range1,
+    count1, count0,
 
     -- ** Permute
     bitrev, byterev,
@@ -357,7 +358,7 @@ cbits x upper lower = x .& (inv (bits upper lower))
 
 
 ------------------------------------------------------------------------
--- Get asserted bit positions
+-- Get asserted bit positions and count bits
 ------------------------------------------------------------------------
 
 -- | Get bit positions asserted with 1
@@ -381,6 +382,20 @@ pos0 x = bitSearch testBit (inv x) hexBitSeq
 range1 :: Hex -> (Int,Int)
 range1 x = let y = pos1 x
            in  (head y, last y)
+
+-- | Count bit-1
+--
+-- >>> count1 0b11001
+-- 3
+count1 :: Hex -> Int
+count1 = popCount
+
+-- | Count bit-0
+--
+-- >>> count0 0xf
+-- 60
+count0 :: Hex -> Int
+count0 = popCount . inv
 
 
 ------------------------------------------------------------------------
@@ -925,6 +940,8 @@ traceWarn str x = trace (colorMagenta ++ str ++ colorReset) x
 -- prop> (x .@pos1 .@bitList) == x
 -- prop> (x .@pos0 .@bitList) == (inv x)
 -- prop> when (x1 >= x2 && x2 >= 0 && x1 < hexBitSize) $ (range1 $ bits x1 x2) == (x1,x2)
+-- prop> (count1 x) == (length $ pos1 x)
+-- prop> ((count1 x) + (count0 x)) == hexBitSize
 --
 -- prop> (mergeBits $ splitBits x) == x
 -- prop> (mergeBytes $ splitBytes x) == x
