@@ -887,7 +887,7 @@ traceWarn str x = trace (colorMagenta ++ str ++ colorReset) x
 -- prop> (x .& y) == (inv ((inv x) .| (inv y)))             -- De Morgan
 -- prop> (x .^ y) == (((x .& (inv y)) .| ((inv x) .& y)))   -- xor
 --
--- prop> ((x ./ y)*y + (x .% y)) == x                       -- div and mod
+-- prop> when (y /= 0) $ ((x ./ y)*y + (x .% y)) == x       -- div and mod
 --
 -- prop> when (n >= 0) $ (x .<< n) == (x * (2^n))                 -- left shift
 -- prop> when (n >= 0) $ (x .>> n) == (bitrev ((bitrev x) .<< n)) -- right shift
