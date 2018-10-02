@@ -159,7 +159,7 @@ ghci> cbits 0x1234 7 4
 ```
 
 
-#### Get asserted bit positions
+#### Get asserted bit positions and count bits
 
 ```
 ghci> pos1 0x0081
@@ -167,8 +167,13 @@ ghci> pos1 0x0081
 ```
 
 ```
-ghci>  pos0 $ inv 0x0100
+ghci> pos0 $ inv 0x0100
 [8]
+```
+
+```
+ghci> count1 0b11001
+3
 ```
 
 
@@ -310,7 +315,8 @@ Hex type is deriving Data.Bits type. So you could use functions of Data.Bits.
 ghci> x `testBit` 8
 ghci> x `clearBit` 15
 ghci> x .&. 0xff
-ghci> countLeadingZeros (0xff ::Hex)
+ghci> countLeadingZeros x
+ghci> popCount x
 ```
 
 #### Clear screen
@@ -454,7 +460,7 @@ Please see also [Hackage document](http://hackage.haskell.org/package/ghci-hexca
 | `cbits` x1 n1 n2              | Clear bits from n1 to n2 of x1        |
 
 
-#### Get asserted bit positions
+#### Get asserted bit positions and count bits
 
 | Operation                     | Description                           |
 |:------------------------------|:--------------------------------------|
@@ -462,6 +468,9 @@ Please see also [Hackage document](http://hackage.haskell.org/package/ghci-hexca
 | `pos0` x1                     | Get bit positions asserted with 0     |
 |                               |                                       |
 | `range` x1                    | Get upper and lower boundaries        |
+|                               |                                       |
+| `count1` x1                   | Count bit-1                           |
+| `count0` x1                   | Count bit-0                           |
 
 
 #### Permute
@@ -472,6 +481,7 @@ Please see also [Hackage document](http://hackage.haskell.org/package/ghci-hexca
 | `byterev` x1                  | Reverse bytes                         |
 |                               |                                       |
 | `gather` x1 x2                | Gather bits from x1 by x2             |
+| `scatter` x1 x2 x3            | Scatter bits from x3 to x1 by x2      |
 
 
 #### Split and merge
