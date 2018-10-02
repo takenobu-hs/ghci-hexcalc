@@ -1,7 +1,10 @@
 name:                ghci-hexcalc
 version:             0.1.0.0
 synopsis:            GHCi as a Hex Calculator interactive
-description:         This is an interactive hex-calculator using Haskell/GHCi.
+description:
+  This package defines operations for an interactive hex-caluclator using GHCi.
+  This is a simple and casual interactive tool like Perl and Excel
+  for daily work.
 homepage:            https://github.com/takenobu-hs/ghci-hexcalc
 license:             BSD3
 license-file:        LICENSE

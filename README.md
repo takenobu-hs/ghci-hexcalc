@@ -7,9 +7,17 @@ The GHCi (REPL for Haskell) is a very useful interactive tool, it's not only for
 This package "ghci-hexcalc" is an interactive hex-calculator using Haskell/GHCi.
 This is a simple and casual tool like Perl and Excel for our daily work.
 
+Interactive oriented features:
+* Short-named operators and functions
+* Show values in hexadecimal format by default
+* Suppress type annotation of numeric literals by type inference
+* Postfix-notation available 
+* Highlight available
+
 See also [description on Hackage](https://hackage.haskell.org/package/ghci-hexcalc).
 
-Contents:
+Contents
+--------
 
   * [Run](#run)
   * [Example of use](#example-of-use)

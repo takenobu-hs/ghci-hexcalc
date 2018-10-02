@@ -13,9 +13,30 @@
 -- Stability   :  experimental
 -- Portability :  non-portable (GHC Extensions)
 --
--- This is an interactive hex-calculator using Haskell/GHCi.
---
+-- This module defines operations for an interactive hex-caluclator using GHCi.
 -- This is a simple and casual interactive tool like Perl and Excel for daily work.
+--
+-- Interactive oriented features:
+--
+-- * Short-named operators and functions
+--
+-- * Show values in hexadecimal format by default
+--
+-- * Suppress type annotation of numeric literals by type inference
+--
+-- * Postfix-notation available 
+--
+-- * Highlight available
+--
+-- Example of use:
+--
+-- > ghci> (1 .<< 16) .| 0xf .& 3
+-- > 0x0000_0000_0001_0003
+--
+-- > ghci> 0xf0 .@bin
+-- > "0b1111_0000"
+--
+-- See also <https://github.com/takenobu-hs/ghci-hexcalc#readme web page>.
 --
 -----------------------------------------------------------------------------
 
