@@ -185,6 +185,24 @@ ghci> count1 0b11001
 ```
 
 
+#### Permute, split and merge
+
+```
+ghci> gather 0x12345678 0x0ff000f0
+0x0000_0000_0000_0237
+```
+
+```
+ghci> scatter 0x12345678 0xff00ff00 0xabcd
+0x0000_0000_ab34_cd78
+```
+
+```
+ghci> (3,0b101) .++ (2,0b11)
+(5,0x0000_0000_0000_0017)
+```
+
+
 #### Predefined-constants
 
 ```
@@ -500,6 +518,10 @@ Please see also [Hackage document](http://hackage.haskell.org/package/ghci-hexca
 | `splitBytes` x1               | Split bytes to List                   |
 | `mergeBits` [x1, x2, .. xn]   | Merge bits from List                  |
 | `mergeBytes` [x1, x2, .. xn]  | Merge bytes from List                 |
+|                               |                                       |
+| `splitPairs` [n1, .. nn] x1   | Split bits to pair of (length,Hex)    |
+| `mergePairs` [(n1,x1),..]     | Merge bits from pair of (length,Hex)  |
+| (n1,x1) `.++` (n2,x2)         | Concatinate pairs of (length,Hex)     |
 
 
 #### Predefined-constants
