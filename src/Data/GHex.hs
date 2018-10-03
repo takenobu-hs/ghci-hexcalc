@@ -699,9 +699,9 @@ strip pat xxs@(x:xs)
 -- >>> formatHex "b" 8 127
 -- "0b0111_1111"
 formatHex :: String -> Int -> Hex -> String
-formatHex s len (Hex x) = "0" ++ s ++
-                          (insertUnderScore 4 $
-                           printf ("%0" ++ (show len) ++ s) x)
+formatHex s len !(Hex x) = "0" ++ s ++
+                           (insertUnderScore 4 $
+                            printf ("%0" ++ (show len) ++ s) x)
 
 -- | Insert underscore to string
 --
