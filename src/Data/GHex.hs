@@ -74,6 +74,7 @@ module Data.GHex (
 
     -- ** Split and merge
     splitBits, splitBytes, mergeBits, mergeBytes,
+    (.++),
 
     -- ** Predefined-constants
 
@@ -152,6 +153,7 @@ infixl 8 .<< , .>>
 infixl 7 .& , ./ , .%
 infixl 6 .^
 infixl 5 .|
+infixl 5 .++
 infixl 0 .@
 
 
@@ -488,6 +490,22 @@ mergeBits xs = foldl' f 0 xs
 mergeBytes :: [Int] -> Hex
 mergeBytes xs = foldl' f 0 xs
     where f v x = v*256 + ((fromIntegral x) .& 0xff)
+
+-- | Concatinate pairs of (length,Hex)
+--
+-- >>> (3,0b101) .++ (2,0b11)
+-- (5,0x0000_0000_0000_0017)
+-- >>> (4,0xa) .++ (4,0xb) .++ (8,0xcd)
+-- (16,0x0000_0000_0000_abcd)
+-- >>> (4,0xe) .++ (4,0xf) .@snd
+-- 0x0000_0000_0000_00ef
+(.++) :: (Int,Hex) -> (Int,Hex) -> (Int,Hex)
+(.++) (n1,x1) (n2,x2)
+  | isValid   = ((n1+n2),
+                 (((x1 .& (mask (n1-1))) .<< n2) .|
+                   (x2 .& (mask (n2-1)))))
+  | otherwise = traceWarn "Warning: (.++): n1, n2 or n1+n2 is out of range" ((n1+n2),0)
+  where isValid = (n1 > 0) && (n2 > 0) && ((n1+n2) <= hexBitSize)
 
 
 ------------------------------------------------------------------------
@@ -984,6 +1002,7 @@ traceWarn str x = trace (colorMagenta ++ str ++ colorReset) x
 -- prop> (mergeBytes $ splitBytes x) == x
 -- prop> (bitrev $ bitrev x) == x
 -- prop> (byterev $ byterev x) == x
+-- prop> (a1 >= 1 && a2 >= 1 && (a1+a2) <= hexBitSize) ==> ((a1,x1) .++ (a2,x2)) == ((a1+a2), (mergeBits $ (lastN a1 $ splitBits x1) ++ (lastN a2 $ splitBits x2)))
 --
 -- prop> when (n >= 0 && x `testBit` n) $ ((signext x n) .| (sbits x (n-1) 0)) == all1
 -- prop> when (n >= 0 && (not(x `testBit` n))) $ ((signext x n) .& (cbits x (n-1) 0)) == all0
