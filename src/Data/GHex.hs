@@ -74,6 +74,7 @@ module Data.GHex (
 
     -- ** Split and merge
     splitBits, splitBytes, mergeBits, mergeBytes,
+    splitPairs, mergePairs,
     (.++),
 
     -- ** Predefined-constants
@@ -490,6 +491,24 @@ mergeBits xs = foldl' f 0 xs
 mergeBytes :: [Int] -> Hex
 mergeBytes xs = foldl' f 0 xs
     where f v x = v*256 + ((fromIntegral x) .& 0xff)
+
+-- | Split bits to pair of (length,Hex)
+--
+-- >>> splitPairs [2,4,4] 0xabcd
+-- [(2,0x0000_0000_0000_0003),(4,0x0000_0000_0000_000c),(4,0x0000_0000_0000_000d)]
+splitPairs :: [Int] -> Hex -> [(Int,Hex)]
+splitPairs ns x = let ns' = reverse ns
+                      xs  = reverse $ splitBits x
+                      pairs = reverse $ splitByList ns' xs
+                  in map (\(x,y) -> (x,mergeBits $ reverse y)) pairs
+
+-- | Merge bits from pair of (length,Hex)
+--
+-- >>> mergePairs [(2,0x3),(4,0xc),(4,0xd)]
+-- 0x0000_0000_0000_03cd
+mergePairs :: [(Int,Hex)] -> Hex
+mergePairs xs = mergeBits $ concat $
+                map (\(n,x) -> lastN n $ splitBits x) xs
 
 -- | Concatinate pairs of (length,Hex)
 --
@@ -1003,6 +1022,8 @@ traceWarn str x = trace (colorMagenta ++ str ++ colorReset) x
 -- prop> (bitrev $ bitrev x) == x
 -- prop> (byterev $ byterev x) == x
 -- prop> (a1 >= 1 && a2 >= 1 && (a1+a2) <= hexBitSize) ==> ((a1,x1) .++ (a2,x2)) == ((a1+a2), (mergeBits $ (lastN a1 $ splitBits x1) ++ (lastN a2 $ splitBits x2)))
+-- prop> (a1 >= 1 && a2 >= 1 && (a1+a2) <= hexBitSize) ==> ((a1,x1) .++ (a2,x2)) == ((a1+a2), (mergePairs [(a1,x1),(a2,x2)]))
+-- prop> (a1 >= 1 && a2 >= 1 && (a1+a2) <= hexBitSize) ==> (mergePairs $ splitPairs [a1,a2] x1) == (x1 .& (mask (a1+a2-1)))
 --
 -- prop> when (n >= 0 && x `testBit` n) $ ((signext x n) .| (sbits x (n-1) 0)) == all1
 -- prop> when (n >= 0 && (not(x `testBit` n))) $ ((signext x n) .& (cbits x (n-1) 0)) == all0
