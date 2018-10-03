@@ -305,7 +305,7 @@ mask n = bits n 0
 gets :: Hex -> Int -> Int -> Hex
 gets x upper lower
   | (upper >= lower) && (lower >= 0) = ((bits upper 0) .& x) .>> lower
-  | otherwise = traceWarn "Warning: 3rd-arg larger than 2nd-arg" x
+  | otherwise = traceWarn "Warning: gets: 3rd-arg larger than 2nd-arg" x
 
 -- | Replace bits from n1 to n2
 --
@@ -315,7 +315,7 @@ puts :: Hex -> Int -> Int -> Hex -> Hex
 puts x1 upper lower x2
   | (upper >= lower) && (lower >= 0) = (cbits x1 upper lower) .|
                                       ((mask (upper - lower) .& x2) .<< lower)
-  | otherwise = traceWarn "Warning: 3rd-arg larger than 2nd-arg" x1
+  | otherwise = traceWarn "Warning: puts: 3rd-arg larger than 2nd-arg" x1
 
 
 -- | Extract a bit
