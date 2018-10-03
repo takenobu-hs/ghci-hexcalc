@@ -33,8 +33,8 @@
 -- > ghci> (1 .<< 16) .| 0xf .& 3
 -- > 0x0000_0000_0001_0003
 --
--- > ghci> 0xf0 .@bin
--- > "0b1111_0000"
+-- > ghci> 0xff .@dec
+-- > "255"
 --
 -- See also <https://github.com/takenobu-hs/ghci-hexcalc#readme web page>.
 --
