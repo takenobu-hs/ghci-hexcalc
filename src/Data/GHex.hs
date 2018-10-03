@@ -872,6 +872,22 @@ splitN n [] = []
 splitN n xs = as : splitN n bs
     where (as, bs) = splitAt n xs
 
+-- | Take n-elements for each n in List
+--
+-- >>> splitByList [1,2,4] [10,11,12,13,14,15,16]
+-- [(1,[10]),(2,[11,12]),(4,[13,14,15,16])]
+splitByList :: [Int] -> [a] -> [(Int,[a])]
+splitByList _ [] = []
+splitByList [] x = []
+splitByList (n:ns) x = (n, (take n x)) : (splitByList ns (drop n x))
+
+-- | Take last n-elements
+--
+-- >>> lastN 3 [1,2,3,4,5,6,7]
+-- [5,6,7]
+lastN :: Int -> [a] -> [a]
+lastN n xs = reverse $ take n $ reverse xs
+
 -- | Insert element each n
 --
 -- >>> insertElemBy "_" 4 "123456789"
