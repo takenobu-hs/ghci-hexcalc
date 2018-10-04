@@ -23,3 +23,4 @@
 units = zero .@color (tera .| giga .| mega .| kilo)
 virtual_address = bits 31 15
 control_enable = bit1 3
+blockSize = 128 :: Hex
