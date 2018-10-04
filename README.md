@@ -3,7 +3,7 @@
 GHCi as a Hex-Calculator interactive
 ====================================
 
-The GHCi (REPL for Haskell) is a very useful interactive tool, it's not only for debugging.  
+The GHCi (REPL for Haskell) is a very useful interactive tool, it's not only for debugging :)  
 This package "ghci-hexcalc" is an interactive hex-calculator using Haskell/GHCi.
 This is a simple and casual tool like Perl and Excel for our daily work.
 
@@ -82,7 +82,7 @@ ghci> y = it       -- `it` is GHCi's variable. It stores the previous result.
 
 #### Arithmetic operations
 
-You could also use arithmetic operator in Hex type.
+You could also use arithmetic operators in Hex type.
 
 ```
 ghci> x + 3
@@ -93,7 +93,7 @@ ghci> neg x
 
 #### Logical operations
 
-Numeric literals applied to function of this package is inferred as B type.
+Numeric literals applied to functions of this package are inferred as B type.
 
 ```
 ghci> 0xff .& 6
@@ -243,7 +243,7 @@ ghci> 0xf0 .@pos1
 ```
 
 
-#### Formatting for hex, bin, dec, Tera/Giga/Mega/Kilo and signed
+#### Formatting for hex, bin, dec, Tera,Giga,Mega,Kilo and signed
 
 Formatting functions convert a Hex type value to a string type for each format.  
 
@@ -301,7 +301,7 @@ ghci> 0 .@color (bitList [54,53,4,3,2])
 ```
 
 
-#### Input & convert
+#### Input and convert
 
 The function `inputRawHexIO`  inputs a string and converts it to a Hex type.
 
@@ -579,10 +579,10 @@ Please see also [Hackage document](http://hackage.haskell.org/package/ghci-hexca
 | Operation                     | Description                           |
 |:------------------------------|:--------------------------------------|
 | `color` x1 x2                 | Highlight bit of x1 specified with x2 |
-| `ppr` f1 x1                   | Print x1 applied with f1              |
+| `ppr` fun x1                  | Print x1 applied with fun             |
 
 
-#### Input & convert
+#### Input and convert
 
 | Operation                     | Description                           |
 |:------------------------------|:--------------------------------------|
