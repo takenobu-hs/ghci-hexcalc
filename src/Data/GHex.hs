@@ -14,7 +14,8 @@
 -- Portability :  non-portable (GHC Extensions)
 --
 -- This module defines operations for an interactive hex-caluclator using GHCi.
--- This is a simple and casual interactive tool like Perl and Excel for daily work.
+-- This is a simple and casual interactive tool like Perl and Excel for daily
+-- work.
 --
 -- Interactive oriented features:
 --
@@ -94,7 +95,7 @@ module Data.GHex (
     -- ** Postfix notation
     (.@),
 
-    -- ** Formatting for hex, bin, dec and T/G/M/K unit
+    -- ** Formatting for hex, bin, dec and T,G,M,K units
     -- $formatting
 
     -- *** Hexadecimal formatting
@@ -114,10 +115,10 @@ module Data.GHex (
     -- *** Sized data formatting for (length,Hex)
     hexSized, binSized,
 
-    -- ** Pretty print
+    -- ** Hilighting and pretty-print
     color, ppr,
 
-    -- ** Input & convert
+    -- ** Input and convert
     inputRawHexIO,
 
     -- ** Miscellaneous
@@ -640,7 +641,7 @@ x .@ f = f x
 
 
 ------------------------------------------------------------------------
--- Formatting for hex, bin, dec and T,G,M,K unit and any.
+-- Formatting for hex, bin, dec and T,G,M,K units and any.
 ------------------------------------------------------------------------
 
 -- $formatting
@@ -824,7 +825,7 @@ ppr f x = putStrLn $ f x
 
 
 ------------------------------------------------------------------------
--- Input & convert
+-- Input and convert
 ------------------------------------------------------------------------
 
 -- | Input hexadecimal string and convert to Hex type
@@ -1001,7 +1002,7 @@ traceWarn str x = trace (colorMagenta ++ str ++ colorReset) x
 -- >>> :}
 
 -- $property
--- Property in quickcheck and doctest.
+-- Properties for QuickCheck testing
 --
 -- prop> (inv $ inv x) == x
 -- prop> (neg $ neg x) == x
