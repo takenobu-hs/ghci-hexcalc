@@ -507,8 +507,7 @@ splitPairs ns x = let ns' = reverse ns
 -- >>> mergePairs [(2,0x3),(4,0xc),(4,0xd)]
 -- 0x0000_0000_0000_03cd
 mergePairs :: [(Int,Hex)] -> Hex
-mergePairs xs = mergeBits $ concat $
-                map (\(n,x) -> lastN n $ splitBits x) xs
+mergePairs xs = mergeBits $ concatMap (\(n,x) -> lastN n $ splitBits x) xs
 
 -- | Concatinate pairs of (length,Hex)
 --
