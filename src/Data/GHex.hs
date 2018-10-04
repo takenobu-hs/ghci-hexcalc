@@ -111,6 +111,9 @@ module Data.GHex (
     signed,
     strip,
 
+    -- *** Sized data formatting for (length,Hex)
+    hexSized, binSized,
+
     -- ** Pretty print
     color, ppr,
 
@@ -745,6 +748,21 @@ formatHex s len !(Hex x) = "0" ++ s ++
 -- "1234_5678_9abc_def0"
 insertUnderScore :: Int -> String -> String
 insertUnderScore n xs = insertElemBy "_" n xs
+
+
+-- | Hexadecimal formatting for pair of (length,Hex)
+--
+-- >>> (8,254) .@hexSized
+-- "0xfe"
+hexSized :: (Int,Hex) -> String
+hexSized (n,x) = hexN n x
+
+-- | Binary formatting for pair of (length,Hex)
+--
+-- >>> (8,0x71) .@binSized
+-- "0b0111_0001"
+binSized :: (Int,Hex) -> String
+binSized (n,x) = binN n x
 
 
 ------------------------------------------------------------------------
