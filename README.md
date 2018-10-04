@@ -342,7 +342,6 @@ ghci> x `testBit` 8
 ghci> x `clearBit` 15
 ghci> x .&. 0xff
 ghci> countLeadingZeros x
-ghci> popCount x
 ```
 
 #### Clear screen
@@ -393,8 +392,9 @@ Please see also [Hackage document](http://hackage.haskell.org/package/ghci-hexca
   * The core type of this package is the `Hex` type.
   * `Hex` type is implemented in unsigned `Word`.
   * `Hex` type is 64 bit length on x86_64.
-* Operators:
+* Operators and functions:
   * Operators in this package begin with `.`(dot), like `.&` and `.|`.
+  * Most functions align bits to the LSB side.
 
 
 #### Numeric literals by `Hex` type annotation
@@ -546,32 +546,35 @@ Please see also [Hackage document](http://hackage.haskell.org/package/ghci-hexca
 
 #### Formatting for hex, bin, dec, Tera/Giga/Mega/Kilo and signed
 
-| Operation                     | Description                           |
-|:------------------------------|:--------------------------------------|
-| `.@hex`                       | Show in hexadecimal string            |
-| `.@hex8`                      | Show in hexadecimal string of 8bit    |
-| `.@hex16`                     | Show in hexadecimal string of 16bit   |
-| `.@hex32`                     | Show in hexadecimal string of 32bit   |
-| `.@hex64`                     | Show in hexadecimal string of 64bit   |
-| `.@hexN` n1                   | Show in hexadecimal string of n1 bit  |
-|                               |                                       |
-| `.@bin`                       | Show in binary string                 |
-| `.@bin8`                      | Show in binary string of 8bit         |
-| `.@bin16`                     | Show in binary string of 16bit        |
-| `.@bin32`                     | Show in binary string of 32bit        |
-| `.@bin64`                     | Show in binary string of 64bit        |
-| `.@binN` n1                   | Show in binary string of n1 bit       |
-|                               |                                       |
-| `.@dec`                       | Show in decimal string                |
-| `.@decT`                      | Show in decimal of Tera unit          |
-| `.@decG`                      | Show in decimal of Giga unit          |
-| `.@decM`                      | Show in decimal of Mega unit          |
-| `.@decK`                      | Show in decimal of Kilo unit          |
-|                               |                                       |
-| `.@signed`                    | Show in singed decimal with `Word`    |
+| Operation                     | Description                             |
+|:------------------------------|:----------------------------------------|
+| `.@hex`                       | Show in hexadecimal string              |
+| `.@hex8`                      | Show in hexadecimal string of 8bit      |
+| `.@hex16`                     | Show in hexadecimal string of 16bit     |
+| `.@hex32`                     | Show in hexadecimal string of 32bit     |
+| `.@hex64`                     | Show in hexadecimal string of 64bit     |
+| `.@hexN` n1                   | Show in hexadecimal string of n1 bit    |
+|                               |                                         |
+| `.@bin`                       | Show in binary string                   |
+| `.@bin8`                      | Show in binary string of 8bit           |
+| `.@bin16`                     | Show in binary string of 16bit          |
+| `.@bin32`                     | Show in binary string of 32bit          |
+| `.@bin64`                     | Show in binary string of 64bit          |
+| `.@binN` n1                   | Show in binary string of n1 bit         |
+|                               |                                         |
+| `.@dec`                       | Show in decimal string                  |
+| `.@decT`                      | Show in decimal of Tera unit            |
+| `.@decG`                      | Show in decimal of Giga unit            |
+| `.@decM`                      | Show in decimal of Mega unit            |
+| `.@decK`                      | Show in decimal of Kilo unit            |
+|                               |                                         |
+| `.@signed`                    | Show in singed decimal with `Word`      |
+|                               |                                         |
+| `.@hexSized`                  | Show in hexadecimal string of (len,Hex) |
+| `.@binSized`                  | Show in binary string of (len,Hex)      |
 
 
-#### Pretty print
+#### Hilighting and pretty-print
 
 | Operation                     | Description                           |
 |:------------------------------|:--------------------------------------|
