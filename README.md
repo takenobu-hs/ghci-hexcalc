@@ -553,7 +553,7 @@ Please see also [Hackage document](http://hackage.haskell.org/package/ghci-hexca
 | `.@hex16`                     | Show in hexadecimal string of 16bit   |
 | `.@hex32`                     | Show in hexadecimal string of 32bit   |
 | `.@hex64`                     | Show in hexadecimal string of 64bit   |
-| `.@hexN` n1                   | Show in hexadecimal string of n1-digit|
+| `.@hexN` n1                   | Show in hexadecimal string of n1 bit  |
 |                               |                                       |
 | `.@bin`                       | Show in binary string                 |
 | `.@bin8`                      | Show in binary string of 8bit         |

@@ -606,7 +606,7 @@ hexBitSeq = reverse [0..(hexBitSize-1)]
 
 -- | Byte size of Hex type. It's 8 of x86_64.
 hexByteSize :: Int
-hexByteSize = fromInteger ( ceiling ((fromIntegral hexBitSize) / 8))
+hexByteSize = hexBitSize `ceilingDiv` 8
 
 -- | Number sequence. [hexByteSeq-1, hexByteSeq-2, .. 0]
 hexByteSeq :: [Int]
@@ -667,17 +667,17 @@ hex = hex64
 
 -- | Hexadecimal formatting with N-bit length
 hexN :: Int -> Hex -> String
-hexN = formatHex "x"
+hexN n x1 = formatHex "x" (n `ceilingDiv` 4) x1
 
 hex8, hex16, hex32, hex64 :: Hex -> String
 -- | Hexadecimal formatting with 8-bit length
-hex8  = hexN 2
+hex8  = hexN 8
 -- | Hexadecimal formatting with 16-bit length
-hex16 = hexN 4
+hex16 = hexN 16
 -- | Hexadecimal formatting with 32-bit length
-hex32 = hexN 8
+hex32 = hexN 32
 -- | Hexadecimal formatting with 64-bit length
-hex64 = hexN 16
+hex64 = hexN 64
 
 -- | Binary formatting with auto-adjusted length
 bin :: Hex -> String
@@ -932,6 +932,15 @@ lastN n xs = reverse $ take n $ reverse xs
 -- ["a","_","b","c","_","d","e"]
 insertElemBy :: [a] -> Int -> [a] -> [a]
 insertElemBy s n = reverse . intercalate s . splitN n .reverse
+
+-- | ceilingDiv
+--
+-- >>> ceilingDiv 8 4
+-- 2
+-- >>> ceilingDiv 9 4
+-- 3
+ceilingDiv :: Int -> Int -> Int
+ceilingDiv x y = fromInteger (ceiling ((fromIntegral x) / (fromIntegral y)))
 
 
 ----- ANSI Escape sequences
