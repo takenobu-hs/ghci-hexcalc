@@ -48,7 +48,7 @@ Example of use
 
 #### Numeric literals by `Hex` type annotation
 
-The value of Hex type is shown as hexadecimal format.
+The value of `Hex` type is shown as hexadecimal format.
 
 ```
 ghci> 1 :: Hex
@@ -82,7 +82,7 @@ ghci> y = it       -- `it` is GHCi's variable. It stores the previous result.
 
 #### Arithmetic operations
 
-You could also use arithmetic operators in Hex type.
+You could also use arithmetic operators in `Hex` type.
 
 ```
 ghci> x + 3
@@ -93,7 +93,7 @@ ghci> neg x
 
 #### Logical operations
 
-Numeric literals applied to functions of this package are inferred as B type.
+Numeric literals applied to functions of this package are inferred as `Hex` type.
 
 ```
 ghci> 0xff .& 6
@@ -245,7 +245,7 @@ ghci> 0xf0 .@pos1
 
 #### Formatting for hex, bin, dec, Tera,Giga,Mega,Kilo and signed
 
-Formatting functions convert a Hex type value to a string type for each format.  
+Formatting functions convert a `Hex` type value to a string type for each format.  
 
 ```
 ghci> 2^16 .@hex
@@ -303,7 +303,7 @@ ghci> 0 .@color (bitList [54,53,4,3,2])
 
 #### Input and convert
 
-The function `inputRawHexIO`  inputs a string and converts it to a Hex type.
+The function `inputRawHexIO`  inputs a string and converts it to a `Hex` type.
 
 ```
 ghci> inputRawHexIO
@@ -335,7 +335,7 @@ ghci> 0 .@color (tera .| giga .| mega .| kilo)
 
 #### Using Data.Bits library
 
-Hex type is deriving Data.Bits type. So you could use functions of Data.Bits.
+`Hex` type is deriving `Data.Bits` type. So you could use functions of `Data.Bits`.
 
 ```
 ghci> x `testBit` 8
