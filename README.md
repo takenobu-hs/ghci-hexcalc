@@ -341,6 +341,7 @@ Hex type is deriving Data.Bits type. So you could use functions of Data.Bits.
 ghci> x `testBit` 8
 ghci> x `clearBit` 15
 ghci> x .&. 0xff
+ghci> x `rotateL` 4
 ghci> countLeadingZeros x
 ```
 
@@ -563,6 +564,8 @@ Please see also [Hackage document](http://hackage.haskell.org/package/ghci-hexca
 | `.@binN` n1                   | Show in binary string of n1 bit         |
 |                               |                                         |
 | `.@dec`                       | Show in decimal string                  |
+| `.@decE`                      | Show in decimal of Exa unit             |
+| `.@decP`                      | Show in decimal of Peta unit            |
 | `.@decT`                      | Show in decimal of Tera unit            |
 | `.@decG`                      | Show in decimal of Giga unit            |
 | `.@decM`                      | Show in decimal of Mega unit            |
@@ -623,7 +626,7 @@ $ ghci -XBinaryLiterals -XNumericUnderscores
 
 It is useful to set the alias of the shell:
 ```bash
-alias ghex="ghci  -haddock $XX/src/Data/GHex.hs"
+alias ghex="(cd $XXX/ghci-hexcalc; ghci -ghci-script example/example.ghci)"
 ```
 
 
@@ -631,6 +634,6 @@ alias ghex="ghci  -haddock $XX/src/Data/GHex.hs"
 
 You can also run in one shot mode (a expression evaluation mod) by `ghc -e`:
 ```bash
-$ ghc -e '4 * giga'
+$ ghc src/Data/GHex.hs -e '4 * giga'
 0x0000_0004_0000_0000
 ```

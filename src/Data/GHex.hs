@@ -85,7 +85,7 @@ module Data.GHex (
     exa, peta, tera, giga, mega, kilo,
 
     -- *** Utility constants
-    -- $constants_unitity
+    -- $constants_utility
     zero, one, all0, all1,
 
     -- *** Implementation constants
@@ -95,7 +95,7 @@ module Data.GHex (
     -- ** Postfix notation
     (.@),
 
-    -- ** Formatting for hex, bin, dec and T,G,M,K units
+    -- ** Formatting for hex, bin, dec and etc.
     -- $formatting
 
     -- *** Hexadecimal formatting
@@ -568,7 +568,9 @@ mega = bit 20 :: Hex
 -- | Ki: 2^10
 kilo = bit 10 :: Hex
 
--- $constants_unitity
+-- $constants_utility
+-- Several constants are also predefined.
+--
 -- >>> zero
 -- 0x0000_0000_0000_0000
 -- >>> one
@@ -577,6 +579,11 @@ kilo = bit 10 :: Hex
 -- 0x0000_0000_0000_0000
 -- >>> all1
 -- 0xffff_ffff_ffff_ffff
+--
+-- These can be also used for type inference.
+--
+-- >>> 256*3-1 + zero
+-- 0x0000_0000_0000_02ff
 
 -- | 0x0
 zero = 0 :: Hex
@@ -641,7 +648,7 @@ x .@ f = f x
 
 
 ------------------------------------------------------------------------
--- Formatting for hex, bin, dec and T,G,M,K units and any.
+-- Formatting for hex, bin, dec and E,P,T,G,M,K units and etc.
 ------------------------------------------------------------------------
 
 -- $formatting
@@ -656,6 +663,9 @@ x .@ f = f x
 --
 -- >>> 2^32 .@decG
 -- "4"
+--
+-- >>> map (hexN 12) [0..3]
+-- ["0x000","0x001","0x002","0x003"]
 --
 -- >>> 0xffffffffffffffff .@signed
 -- "-1"
@@ -830,11 +840,22 @@ ppr f x = putStrLn $ f x
 
 -- | Input hexadecimal string and convert to Hex type
 --
+-- It reads only hexadecimal characters, [0-9a-fA-F].
+-- That is, other characters, such as ',',':','-', are ignored.
+-- It is useful for reading from various command output, such as od,
+-- hexdump and etc.
+--
 -- > ghci> inputRawHexIO
 -- > ff aa  (your input)
 -- > ghci>x = it
 -- > ghci>x
 -- > 0x0000_0000_0000_ffaa
+--
+-- > ghci> inputRawHexIO
+-- > 0123:abcd:ffff  (your input)
+-- > ghci>x = it
+-- > ghci>x
+-- > 0x0000_0123_abcd_ffff
 inputRawHexIO :: IO Hex
 inputRawHexIO = do
     x <- getLine
