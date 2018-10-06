@@ -1,25 +1,35 @@
 --
--- run this:
+-- Run this:
 --  $ ghci -ghci-script example/example.ghci
 --
 
--- setting GHC extention of literals for GHCi operation
+
+-- Setting GHC extention of literals for GHCi operation
 -- (Note: -XNumericUnderscores is available on ghc8.6 or later)
 :set -XBinaryLiterals
 :set -XNumericUnderscores
 
--- setting prompt
+
+-- Setting prompt
 :set prompt "ghex> "
 :set prompt-cont "ghex| "
 
--- setting haddok option for `:doc` command
+
+-- Setting haddok option for `:doc` command
 :set -haddock
 
--- load main module
+
+-- Load main module
 :load src/Data/GHex.hs
 
 
--- example for your utility
+-- If you enable the following line,
+-- numeric literals are inferred as Hex type on GHCi by default.
+--
+-- default (Hex)
+
+
+-- Example for your utility
 units = zero .@color (tera .| giga .| mega .| kilo)
 virtual_address = bits 31 15
 control_enable = bit1 3

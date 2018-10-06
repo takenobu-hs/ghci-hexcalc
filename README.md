@@ -637,3 +637,14 @@ You can also run in one shot mode (a expression evaluation mod) by `ghc -e`:
 $ ghc src/Data/GHex.hs -e '4 * giga'
 0x0000_0004_0000_0000
 ```
+
+
+#### Default declaration on GHCi
+
+With the [`default` declaration](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/ghci.html#extended-rules-around-default-declarations), integer literals are inferred as `Hex` types.
+
+```
+ghci> default (Hex)
+ghci> 255
+0x0000_0000_0000_00ff
+```
