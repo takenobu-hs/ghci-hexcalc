@@ -1,5 +1,5 @@
 name:                ghci-hexcalc
-version:             0.1.0.0
+version:             0.1.0.1
 synopsis:            GHCi as a Hex Calculator interactive
 description:
   This package defines operations for an interactive hex-caluclator using GHCi.
@@ -39,5 +39,6 @@ test-suite test-ghci-hexcalc
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base >=4.7 && <5,
                        doctest,
+                       QuickCheck,
                        ghci-hexcalc
   default-language:    Haskell2010
