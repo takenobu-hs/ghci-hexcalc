@@ -1020,6 +1020,8 @@ traceWarn str x = trace (colorMagenta ++ str ++ colorReset) x
 --                     , choose(0x00000000ffffff00, 0x000000ffffffffff)
 --                     , choose(0x00ffffffffffffff, 0xff00000000000000)
 --                     , choose(0x0000000000000000, 0xffffffffffffffff) ]
+-- imply cond prop = forAll (arbitrary `suchThat` cond ) prop
+-- (|=>) cond prop = imply cond prop
 -- >>> :}
 
 -- $property
@@ -1032,34 +1034,33 @@ traceWarn str x = trace (colorMagenta ++ str ++ colorReset) x
 -- prop> (x .& y) == (inv ((inv x) .| (inv y)))             -- De Morgan
 -- prop> (x .^ y) == (((x .& (inv y)) .| ((inv x) .& y)))   -- xor
 --
--- prop> (y /= 0) ==> ((x ./ y)*y + (x .% y)) == x       -- div and mod
+-- prop> (\(x,y) -> (y /= 0)) |=> (\(x,y) -> ((x ./ y)*y + (x .% y)) == x)       -- div and mod
 --
--- prop> (n >= 0) ==> (x .<< n) == (x * (2^n))                 -- left shift
--- prop> (n >= 0) ==> (x .>> n) == (bitrev ((bitrev x) .<< n)) -- right shift
+-- prop> (\(x,n) -> (n >= 0)) |=> (\(x,n) -> (x .<< n) == (x * (2^n)))                 -- left shift
+-- prop> (\(x,n) -> (n >= 0)) |=> (\(x,n) -> (x .>> n) == (bitrev ((bitrev x) .<< n))) -- right shift
 --
--- prop> (x >= 0) ==> (bit1 x) == (2^x)
--- prop> (x >= 0) ==> (byte1 x) == (0xff .<< (8*x))
+-- prop> (>= 0) |=> (\x -> (bit1 x) == (2^x))
+-- prop> (>= 0) |=> (\x -> (byte1 x) == (0xff .<< (8*x)))
 --
--- prop> (x1 >= x2 && x2 >= 0) ==> (bits x1 x2) == (sum $ map (2^) [x2..x1])
--- prop> (x1 >= x2 && x2 >= 0) ==> (bytes x1 x2) == (sum $ map byte1 [x2..x1])
+-- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (bits x1 x2) == (sum $ map (2^) [x2..x1]))
 --
--- prop> (x1 >= x2 && x2 >= 0) ==> (gets all0 x1 x2) == all0
--- prop> (x1 >= x2 && x2 >= 0) ==> ((gets x x1 x2) .<< x2) == (x .& bits x1 x2)
--- prop> (x1 >= x2 && x2 >= 0) ==> (puts x x1 x2 $ gets x x1 x2) == x
+-- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (gets all0 x1 x2) == all0)
+-- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> ((gets x x1 x2) .<< x2) == (x .& bits x1 x2))
+-- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (puts x x1 x2 $ gets x x1 x2) == x)
 --
--- prop> (x1 >= x2 && x2 >= 0) ==> (gather x (bits x1 x2)) == (gets x x1 x2)
--- prop> (x1 > x2 && x2 >= 0)  ==> (gather x3 (bit1 x1 .| bit1 x2)) == (((getBit1 x3 x1) .<< 1) .| (getBit1 x3 x2))
--- prop> (x1 >= x2 && x2 >= 0) ==> (scatter x1 x2 $ gather x1 x2) == x1
+-- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (gather x (bits x1 x2)) == (gets x x1 x2))
+-- prop> (\(x1,x2) -> (x1 > x2 && x2 >= 0)) |=> (\(x1,x2) -> (gather x3 (bit1 x1 .| bit1 x2)) == (((getBit1 x3 x1) .<< 1) .| (getBit1 x3 x2)))
+-- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (scatter x1 x2 $ gather x1 x2) == x1)
 --
--- prop> (x1 >= x2 && x2 >= 0) ==> (sbits all0 x1 x2) == (bits x1 x2)
--- prop> (x1 >= x2 && x2 >= 0) ==> (sbits all0 x1 x2) == (puts all0 x1 x2 all1)
--- prop> (x1 >= x2 && x2 >= 0) ==> (cbits all1 x1 x2) == (inv(bits x1 x2))
--- prop> (x1 >= x2 && x2 >= 0) ==> (cbits all1 x1 x2) == (puts all1 x1 x2 all0)
--- prop> (x1 >= x2 && x2 >= 0) ==> (cbits x x1 x2) == (inv (sbits (inv x) x1 x2))
+-- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (sbits all0 x1 x2) == (bits x1 x2))
+-- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (sbits all0 x1 x2) == (puts all0 x1 x2 all1))
+-- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (cbits all1 x1 x2) == (inv(bits x1 x2)))
+-- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (cbits all1 x1 x2) == (puts all1 x1 x2 all0))
+-- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (cbits x x1 x2) == (inv (sbits (inv x) x1 x2)))
 --
 -- prop> (x .@pos1 .@bitList) == x
 -- prop> (x .@pos0 .@bitList) == (inv x)
--- prop> (x1 >= x2 && x2 >= 0 && x1 < hexBitSize) ==> (range1 $ bits x1 x2) == (x1,x2)
+-- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0 && x1 < hexBitSize)) |=> (\(x1,x2) -> (range1 $ bits x1 x2) == (x1,x2))
 -- prop> (count1 x) == (length $ pos1 x)
 -- prop> ((count1 x) + (count0 x)) == hexBitSize
 --
@@ -1067,11 +1068,11 @@ traceWarn str x = trace (colorMagenta ++ str ++ colorReset) x
 -- prop> (mergeBytes $ splitBytes x) == x
 -- prop> (bitrev $ bitrev x) == x
 -- prop> (byterev $ byterev x) == x
--- prop> (a1 >= 1 && a2 >= 1 && (a1+a2) <= hexBitSize) ==> ((a1,x1) .++ (a2,x2)) == ((a1+a2), (mergeBits $ (lastN a1 $ splitBits x1) ++ (lastN a2 $ splitBits x2)))
--- prop> (a1 >= 1 && a2 >= 1 && (a1+a2) <= hexBitSize) ==> ((a1,x1) .++ (a2,x2)) == ((a1+a2), (mergeSized [(a1,x1),(a2,x2)]))
--- prop> (a1 >= 1 && a2 >= 1 && (a1+a2) <= hexBitSize) ==> (mergeSized $ splitSized [a1,a2] x1) == (x1 .& (mask (a1+a2-1)))
+-- prop> (\(a1,a2,x1,x2) -> (a1 >= 1 && a2 >= 1 && (a1+a2) <= hexBitSize)) |=> (\(a1,a2,x1,x2) -> ((a1,x1) .++ (a2,x2)) == ((a1+a2), (mergeBits $ (lastN a1 $ splitBits x1) ++ (lastN a2 $ splitBits x2))))
+-- prop> (\(a1,a2,x1,x2) -> (a1 >= 1 && a2 >= 1 && (a1+a2) <= hexBitSize)) |=> (\(a1,a2,x1,x2) -> ((a1,x1) .++ (a2,x2)) == ((a1+a2), (mergeSized [(a1,x1),(a2,x2)])))
+-- prop> (\(a1,a2,x1,x2) -> (a1 >= 1 && a2 >= 1 && (a1+a2) <= hexBitSize)) |=> (\(a1,a2,x1,x2) -> (mergeSized $ splitSized [a1,a2] x1) == (x1 .& (mask (a1+a2-1))))
 --
--- prop> (n >= 0 && x `testBit` n) ==> ((signext x n) .| (sbits x (n-1) 0)) == all1
--- prop> (n >= 0 && (not(x `testBit` n))) ==> ((signext x n) .& (cbits x (n-1) 0)) == all0
--- prop> (not(x `testBit` (hexBitSize-1))) ==> (signed x) == (dec x)
--- prop> (x `testBit` (hexBitSize-1)) ==> (signed x) == show(-1 * (fromIntegral $ ((inv x) + 1))::Int)
+-- prop> (\n -> (n >= 0 && x `testBit` n)) |=> (\n -> ((signext x n) .| (sbits x (n-1) 0)) == all1)
+-- prop> (\n -> (n >= 0 && (not(x `testBit` n)))) |=> (\n -> ((signext x n) .& (cbits x (n-1) 0)) == all0)
+-- prop> (\x -> (not(x `testBit` (hexBitSize-1)))) |=> (\x -> (signed x) == (dec x))
+-- prop> (\x -> (x `testBit` (hexBitSize-1))) |=> (\x -> (signed x) == show(-1 * (fromIntegral $ ((inv x) + 1))::Int))
