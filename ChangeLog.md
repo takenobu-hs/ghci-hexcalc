@@ -1,5 +1,10 @@
 # Changelog for ghci-hexcalc
 
+## 0.1.0.2  -- Mar. 2019
+
+* Update properties to use `suchThat` instead of `==>`
+
+
 ## 0.1.0.1  -- Oct. 2018
 
 * Update cabal file for test
