@@ -134,8 +134,10 @@ import           Data.Bits
 import           Data.List   (foldl', intercalate)
 import           Text.Printf (printf)
 import           Debug.Trace (trace)
-import           Data.Binary.Put (runPut, putWord32le, putFloatle)
-import           Data.Binary.Get (runGet, getFloatle, getWord32le)
+import           Data.Binary.Put (runPut, putWord32le, putWord64le,
+                                  putFloatle, putDoublele)
+import           Data.Binary.Get (runGet, getFloatle, getDoublele,
+                                  getWord32le, getWord64le)
 
 ------------------------------------------------------------------------
 -- Basic type
@@ -792,6 +794,17 @@ float2hex x = runGet (fromIntegral <$> getWord32le) $
 
 float :: Hex -> String
 float = show . hex2float
+
+hex2double :: Hex -> Double
+hex2double x = runGet getDoublele $
+               runPut (putWord64le $ fromIntegral x)
+
+double2hex :: Double -> Hex
+double2hex x = runGet (fromIntegral <$> getWord64le) $
+               runPut (putDoublele x)
+
+double :: Hex -> String
+double = show . hex2double
 
 
 ------------------------------------------------------------------------
