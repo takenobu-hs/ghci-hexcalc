@@ -243,7 +243,7 @@ ghci> 0xf0 .@pos1
 ```
 
 
-#### Formatting for hex, bin, dec, Tera,Giga,Mega,Kilo and signed
+#### Formatting for hex, bin, dec, Tera,Giga,Mega,Kilo, signed and floating
 
 Formatting functions convert a `Hex` type value to a string type for each format.  
 
@@ -275,6 +275,11 @@ ghci> bit 43 .@decT
 ```
 ghci> 0xffffffffffffffff .@signed
 "-1"
+```
+
+```
+ghci> 0x3fc00000 .@float
+"1.5"
 ```
 
 
@@ -318,6 +323,29 @@ ghci> x <- inputRawHexIO
 ff aa  (your input)
 ghci> x
 0x0000_0000_0000_ffaa
+```
+
+
+#### Floating conversion examples
+
+```
+ghci> float2hex 1.0
+0x0000_0000_3f80_0000
+```
+
+```
+ghci> hex2float 0x3fc00000
+1.5
+```
+
+```
+ghci> double2hex 1.0
+0x3ff0_0000_0000_0000
+```
+
+```
+ghci> hex2double 0x40091eb851eb851f
+3.14
 ```
 
 
@@ -545,7 +573,7 @@ Please see also [Hackage document](http://hackage.haskell.org/package/ghci-hexca
 | `hexBitSeq`                   | [hexBitSize-1, hexBitSize-2, .. 0]    |
 
 
-#### Formatting for hex, bin, dec, Tera/Giga/Mega/Kilo and signed
+#### Formatting for hex, bin, dec, Tera,Giga,Mega,Kilo, signed and floating
 
 | Operation                     | Description                             |
 |:------------------------------|:----------------------------------------|
@@ -573,6 +601,9 @@ Please see also [Hackage document](http://hackage.haskell.org/package/ghci-hexca
 |                               |                                         |
 | `.@signed`                    | Show in singed decimal with `Word`      |
 |                               |                                         |
+| `.@float`                     | Show in float string                    |
+| `.@double`                    | Show in double string                   |
+|                               |                                         |
 | `.@hexSized`                  | Show in hexadecimal string of (len,Hex) |
 | `.@binSized`                  | Show in binary string of (len,Hex)      |
 
@@ -590,6 +621,16 @@ Please see also [Hackage document](http://hackage.haskell.org/package/ghci-hexca
 | Operation                     | Description                           |
 |:------------------------------|:--------------------------------------|
 | `inputRawHexIO`               | Input string and convert to Hex type  |
+
+
+#### Floating convert
+
+| Operation                     | Description                           |
+|:------------------------------|:--------------------------------------|
+| `float2hex`                   | Convert Float to Hex type             |
+| `hex2float`                   | Convert Hex to Float type             |
+| `double2hex`                  | Convert Double to Hex type            |
+| `hex2double`                  | Convert Hex to Double type            |
 
 
 #### Miscellaneous
