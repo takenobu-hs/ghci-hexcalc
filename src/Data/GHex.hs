@@ -134,8 +134,6 @@ import           Data.Bits
 import           Data.List   (foldl', intercalate)
 import           Text.Printf (printf)
 import           Debug.Trace (trace)
-import qualified Data.ByteString.Lazy as B
-import           Data.Binary
 import           Data.Binary.Put (runPut, putWord32le, putFloatle)
 import           Data.Binary.Get (runGet, getFloatle, getWord32le)
 
@@ -784,29 +782,16 @@ binSized (n,x) = binN n x
 -- Floating
 ------------------------------------------------------------------------
 
-hex2bs :: Hex -> B.ByteString
-hex2bs x = runPut $ do
-    putWord32le $ fromIntegral x
-
-bs2float :: B.ByteString -> Float
-bs2float = runGet getFloatle
-
 hex2float :: Hex -> Float
-hex2float = bs2float . hex2bs
-
-f32 :: Hex -> String
-f32 = show . hex2float
-
---
-float2bs :: Float -> B.ByteString
-float2bs x = runPut $ putFloatle x
-
-bs2word :: B.ByteString -> Word
-bs2word = runGet $ do
-    fromIntegral <$> getWord32le
+hex2float x = runGet getFloatle $
+              runPut (putWord32le $ fromIntegral x)
 
 float2hex :: Float -> Hex
-float2hex = Hex . bs2word . float2bs
+float2hex x = runGet (fromIntegral <$> getWord32le) $
+              runPut (putFloatle x)
+
+float :: Hex -> String
+float = show . hex2float
 
 
 ------------------------------------------------------------------------
