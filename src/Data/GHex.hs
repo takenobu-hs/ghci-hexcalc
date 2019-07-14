@@ -95,7 +95,7 @@ module Data.GHex (
     -- ** Postfix notation
     (.@),
 
-    -- ** Formatting for hex, bin, dec and etc.
+    -- ** Formatting for hex, bin, dec, floating and etc.
     -- $formatting
 
     -- *** Hexadecimal formatting
@@ -107,9 +107,12 @@ module Data.GHex (
     -- *** Decimal formatting
     dec,
     decE, decP, decT, decG, decM, decK,
+    signed,
+
+    -- *** Floating formatting
+    float, double,
 
     -- *** Miscellaneous formatting
-    signed,
     strip,
 
     -- *** Sized data formatting for (length,Hex)
@@ -120,6 +123,9 @@ module Data.GHex (
 
     -- ** Input and convert
     inputRawHexIO,
+
+    -- ** Floating convert
+    float2hex, hex2float, double2hex, hex2double,
 
     -- ** Miscellaneous
     cls,
@@ -664,6 +670,8 @@ x .@ f = f x
 -- "0b1111_1111"
 -- >>> 0xff .@dec
 -- "255"
+-- >>> 0x3fc00000 .@float
+-- "1.5"
 --
 -- >>> 2^32 .@decG
 -- "4"
@@ -896,8 +904,8 @@ filterHexChar = filter (`elem` "0123456789abcdefABCDEF")
 
 -- | Convert Hex to Float type
 --
--- >>> hex2float 1
--- 1.0e-45
+-- >>> hex2float 0x3fc00000
+-- 1.5
 hex2float :: Hex -> Float
 hex2float x = runGet getFloatle $
               runPut (putWord32le $ fromIntegral x)
@@ -912,8 +920,8 @@ float2hex x = runGet (fromIntegral <$> getWord32le) $
 
 -- | Convert Hex to Double type
 --
--- >>> hex2double 1
--- 5.0e-324
+-- >>> hex2double 0x40091eb851eb851f
+-- 3.14
 hex2double :: Hex -> Double
 hex2double x = runGet getDoublele $
                runPut (putWord64le $ fromIntegral x)
