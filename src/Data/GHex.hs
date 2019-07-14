@@ -781,51 +781,6 @@ binSized (n,x) = binN n x
 
 
 ------------------------------------------------------------------------
--- Floating
-------------------------------------------------------------------------
-
--- | Convert Hex to Float type
---
--- >>> hex2float 1
--- 1.0e-45
-hex2float :: Hex -> Float
-hex2float x = runGet getFloatle $
-              runPut (putWord32le $ fromIntegral x)
-
--- | Convert Float to Hex type
---
--- >>> float2hex 1.0
--- 0x0000_0000_3f80_0000
-float2hex :: Float -> Hex
-float2hex x = runGet (fromIntegral <$> getWord32le) $
-              runPut (putFloatle x)
-
--- | Convert Hex to Double type
---
--- >>> hex2double 1
--- 5.0e-324
-hex2double :: Hex -> Double
-hex2double x = runGet getDoublele $
-               runPut (putWord64le $ fromIntegral x)
-
--- | Convert Double to Hex type
---
--- >>> double2hex 1.0
--- 0x3ff0_0000_0000_0000
-double2hex :: Double -> Hex
-double2hex x = runGet (fromIntegral <$> getWord64le) $
-               runPut (putDoublele x)
-
--- | Float formatting
-float :: Hex -> String
-float = show . hex2float
-
--- | Double formatting
-double :: Hex -> String
-double = show . hex2double
-
-
-------------------------------------------------------------------------
 -- Pretty print
 ------------------------------------------------------------------------
 
@@ -933,6 +888,51 @@ convertStrToHex x = read $ "Hex 0x" ++ (filterHexChar $ strip "0x" x)
 -- "0123456789abcdefABCDEF"
 filterHexChar :: String -> String
 filterHexChar = filter (`elem` "0123456789abcdefABCDEF")
+
+
+------------------------------------------------------------------------
+-- Floating
+------------------------------------------------------------------------
+
+-- | Convert Hex to Float type
+--
+-- >>> hex2float 1
+-- 1.0e-45
+hex2float :: Hex -> Float
+hex2float x = runGet getFloatle $
+              runPut (putWord32le $ fromIntegral x)
+
+-- | Convert Float to Hex type
+--
+-- >>> float2hex 1.0
+-- 0x0000_0000_3f80_0000
+float2hex :: Float -> Hex
+float2hex x = runGet (fromIntegral <$> getWord32le) $
+              runPut (putFloatle x)
+
+-- | Convert Hex to Double type
+--
+-- >>> hex2double 1
+-- 5.0e-324
+hex2double :: Hex -> Double
+hex2double x = runGet getDoublele $
+               runPut (putWord64le $ fromIntegral x)
+
+-- | Convert Double to Hex type
+--
+-- >>> double2hex 1.0
+-- 0x3ff0_0000_0000_0000
+double2hex :: Double -> Hex
+double2hex x = runGet (fromIntegral <$> getWord64le) $
+               runPut (putDoublele x)
+
+-- | Float formatting
+float :: Hex -> String
+float = show . hex2float
+
+-- | Double formatting
+double :: Hex -> String
+double = show . hex2double
 
 
 ------------------------------------------------------------------------
