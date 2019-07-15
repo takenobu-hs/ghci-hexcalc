@@ -915,8 +915,13 @@ float2hex x = runGet (fromIntegral <$> getWord32le) $
 -- >>> hex2float 0x3fc00000
 -- 1.5
 hex2float :: Hex -> Float
-hex2float x = runGet getFloatle $
-              runPut (putWord32le $ fromIntegral x)
+hex2float x
+  | is32bit   = runGet getFloatle $
+                runPut (putWord32le $ fromIntegral x)
+  | otherwise = traceWarn "Warning: hex2float: Out of 32bit range" nan
+    where
+      is32bit = (x <= 0xffffffff)
+      nan = 0/0
 
 -- | Convert Double to Hex type
 --
