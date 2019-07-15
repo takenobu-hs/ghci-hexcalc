@@ -902,14 +902,6 @@ filterHexChar = filter (`elem` "0123456789abcdefABCDEF")
 -- Floating
 ------------------------------------------------------------------------
 
--- | Convert Hex to Float type
---
--- >>> hex2float 0x3fc00000
--- 1.5
-hex2float :: Hex -> Float
-hex2float x = runGet getFloatle $
-              runPut (putWord32le $ fromIntegral x)
-
 -- | Convert Float to Hex type
 --
 -- >>> float2hex 1.0
@@ -918,13 +910,13 @@ float2hex :: Float -> Hex
 float2hex x = runGet (fromIntegral <$> getWord32le) $
               runPut (putFloatle x)
 
--- | Convert Hex to Double type
+-- | Convert Hex to Float type
 --
--- >>> hex2double 0x40091eb851eb851f
--- 3.14
-hex2double :: Hex -> Double
-hex2double x = runGet getDoublele $
-               runPut (putWord64le $ fromIntegral x)
+-- >>> hex2float 0x3fc00000
+-- 1.5
+hex2float :: Hex -> Float
+hex2float x = runGet getFloatle $
+              runPut (putWord32le $ fromIntegral x)
 
 -- | Convert Double to Hex type
 --
@@ -933,6 +925,14 @@ hex2double x = runGet getDoublele $
 double2hex :: Double -> Hex
 double2hex x = runGet (fromIntegral <$> getWord64le) $
                runPut (putDoublele x)
+
+-- | Convert Hex to Double type
+--
+-- >>> hex2double 0x40091eb851eb851f
+-- 3.14
+hex2double :: Hex -> Double
+hex2double x = runGet getDoublele $
+               runPut (putWord64le $ fromIntegral x)
 
 -- | Float formatting
 float :: Hex -> String
