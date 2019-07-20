@@ -1,5 +1,11 @@
 # Changelog for ghci-hexcalc
 
+## 0.1.1.0  -- Jul. 2019
+
+* Add floating operations:
+  - .@float, .@double, hex2float, float2hex, hex2double, double2hex
+
+
 ## 0.1.0.2  -- Mar. 2019
 
 * Update properties to use `suchThat` instead of `==>`

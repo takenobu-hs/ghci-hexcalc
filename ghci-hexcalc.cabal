@@ -1,5 +1,5 @@
 name:                ghci-hexcalc
-version:             0.1.0.2
+version:             0.1.1.0
 synopsis:            GHCi as a Hex Calculator interactive
 description:
   This package defines operations for an interactive hex-caluclator using GHCi.
@@ -13,7 +13,7 @@ maintainer:          takenobu.hs@gmail.com
 copyright:           2018 Takenobu Tani
 category:            Data
 build-type:          Simple
-tested-with:         GHC==8.6.3, GHC==8.4.3
+tested-with:         GHC==8.6.5, GHC==8.4.3
 extra-source-files:  ChangeLog.md,
                      README.md,
                      example/example.ghci
