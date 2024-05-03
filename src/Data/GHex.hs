@@ -127,6 +127,7 @@ module Data.GHex (
 
     -- ** Floating convert
     float2hex, hex2float, double2hex, hex2double,
+    splitFloat, mergeFloat, splitDouble, mergeDouble,
 
     -- ** Miscellaneous
     cls,
