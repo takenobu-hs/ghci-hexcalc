@@ -621,7 +621,7 @@ test2 = 0xfedcba9876543210 :: Hex
 hexBitSize :: Int
 hexBitSize = finiteBitSize (1::Hex)
 
--- | Number sequence. [hexBitSeq-1, hexBitSeq-2, .. 0]
+-- | Number sequence. [hexBitSize-1, hexBitSize-2, .. 0]
 hexBitSeq :: [Int]
 hexBitSeq = reverse [0..(hexBitSize-1)]
 
