@@ -690,14 +690,14 @@ x .@ f = f x
 -- "0x123456789abcdef0"
 
 -- | Hexadecimal formatting with maximum-bit length
-hex :: Hex -> String
+hex :: Integral n => n -> String
 hex = hex64
 
 -- | Hexadecimal formatting with N-bit length
-hexN :: Int -> Hex -> String
-hexN n x1 = formatHex "x" (n `ceilingDiv` 4) x1
+hexN :: Integral n => Int -> n -> String
+hexN n x1 = formatHex "x" (n `ceilingDiv` 4) (fromIntegral x1)
 
-hex8, hex16, hex32, hex64 :: Hex -> String
+hex8, hex16, hex32, hex64 :: Integral n => n -> String
 -- | Hexadecimal formatting with 8-bit length
 hex8  = hexN 8
 -- | Hexadecimal formatting with 16-bit length
