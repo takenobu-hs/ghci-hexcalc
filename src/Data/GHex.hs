@@ -1190,3 +1190,6 @@ traceWarn str x = trace (colorMagenta ++ str ++ colorReset) x
 -- prop> (double2hex $ hex2double x) == x
 -- prop> (hex2float $ float2hex x) == x
 -- prop> (\x -> (x <= 0xffffffff)) |=> (\x -> ((float2hex $ hex2float x) == x))
+--
+-- prop> (mergeDouble $ splitDouble x) == x
+-- prop> (mergeFloat $ splitFloat x) == x
