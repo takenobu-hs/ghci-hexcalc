@@ -20,7 +20,6 @@
 
 
 -- Load main module
-:set -package binary
 :load src/Data/GHex.hs
 
 
