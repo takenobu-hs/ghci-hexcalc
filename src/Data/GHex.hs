@@ -1,7 +1,8 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE BangPatterns               #-}
 {-# LANGUAGE BinaryLiterals             #-}
--- LANGUAGE NumericUnderscores   -- ghc8.6 or later
+{-# LANGUAGE HexFloatLiterals           #-}
+{-# LANGUAGE NumericUnderscores         #-}
 
 -----------------------------------------------------------------------------
 -- |
