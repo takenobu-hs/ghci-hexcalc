@@ -7,7 +7,9 @@
 -- Setting GHC extention of literals for GHCi operation
 -- (Note: -XNumericUnderscores is available on ghc8.6 or later)
 :set -XBinaryLiterals
+:set -XHexFloatLiterals
 :set -XNumericUnderscores
+:set -XNegativeLiterals
 
 
 -- Setting prompt
