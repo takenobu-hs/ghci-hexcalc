@@ -940,6 +940,52 @@ hex2double :: Hex -> Double
 hex2double x = runGet getDoublele $
                runPut (putWord64le $ fromIntegral x)
 
+-- | Split float to elements
+--
+-- >>> splitFloat (-1)
+-- [1,127,0]
+splitFloat :: Float -> [Int]
+splitFloat x = [sign, exp, mants]
+    where
+      n = float2hex x
+      sign  = fromIntegral $ gets n 31 31
+      exp   = fromIntegral $ gets n 30 23
+      mants = fromIntegral $ gets n 22 0
+
+-- | Merge float from elements
+--
+-- >>> mergeFloat [0, 127, 2^22]
+-- 1.5
+mergeFloat :: [Int] -> Float
+mergeFloat [sign, exp, mants] = hex2float n
+    where
+      n = puts 0 31 31 (fromIntegral sign)  .|
+          puts 0 30 23 (fromIntegral exp)   .|
+          puts 0 22 0  (fromIntegral mants)
+
+-- | Split double to elements
+--
+-- >>> splitDouble (-0.5)
+-- [1,1022,0]
+splitDouble :: Double -> [Int]
+splitDouble x = [sign, exp, mants]
+    where
+      n = double2hex x
+      sign  = fromIntegral $ gets n 63 63
+      exp   = fromIntegral $ gets n 62 52
+      mants = fromIntegral $ gets n 51 0
+
+-- | Merge double from elements
+--
+-- >>> mergeDouble [0, 1023, 2^51]
+-- 1.5
+mergeDouble :: [Int] -> Double
+mergeDouble [sign, exp, mants] = hex2double n
+    where
+      n = puts 0 63 63 (fromIntegral sign)  .|
+          puts 0 62 52 (fromIntegral exp)   .|
+          puts 0 51 0  (fromIntegral mants)
+
 -- | Float formatting
 float :: Hex -> String
 float = show . hex2float
