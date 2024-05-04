@@ -711,7 +711,7 @@ hex32 = hexN 32
 -- | Hexadecimal formatting with 64-bit length
 hex64 = hexN 64
 
--- | Hexadecimal formatting with N-bit length
+-- | Hexadecimal formatting for List
 hexs :: Integral n => [n] -> [String]
 hexs xs = map (hexN 0) xs
 
