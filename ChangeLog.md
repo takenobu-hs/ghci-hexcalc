@@ -1,5 +1,11 @@
 # Changelog for ghci-hexcalc
 
+## 0.1.2.0  -- May. 2024
+
+* Add floating operations:
+  - splitFloat, mergeFloat, splitDouble, mergeDouble
+
+
 ## 0.1.1.0  -- Jul. 2019
 
 * Add floating operations:
