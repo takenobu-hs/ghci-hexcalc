@@ -348,6 +348,26 @@ ghci> hex2double 0x40091eb851eb851f
 3.14
 ```
 
+```
+ghci> splitFloat (-1)
+[1,127,0]
+```
+
+```
+ghci> mergeFloat [0, 127, 2^22]
+1.5
+```
+
+```
+ghci> splitDouble (-0.5)
+[1,1022,0]
+```
+
+```
+ghci> mergeDouble [0, 1023, 2^51]
+1.5
+```
+
 
 #### Combination examples
 
@@ -631,6 +651,11 @@ Please see also [Hackage document](http://hackage.haskell.org/package/ghci-hexca
 | `hex2float`                   | Convert Hex to Float type             |
 | `double2hex`                  | Convert Double to Hex type            |
 | `hex2double`                  | Convert Hex to Double type            |
+|                               |                                       |
+| `splitFloat`                  | Split Float to elements               |
+| `mergeFloat`                  | Merge Float from elements             |
+| `splitDouble`                 | Split Double to elements              |
+| `mergeDouble`                 | Merge Double from elements            |
 
 
 #### Miscellaneous
