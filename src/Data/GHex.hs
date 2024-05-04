@@ -101,6 +101,7 @@ module Data.GHex (
 
     -- *** Hexadecimal formatting
     hex, hexN, hex8, hex16, hex32, hex64,
+    hexs,
 
     -- *** Binary formatting
     bin, binN, bin8, bin16, bin32, bin64,
@@ -681,6 +682,9 @@ x .@ f = f x
 -- >>> map (hexN 12) [0..3]
 -- ["0x000","0x001","0x002","0x003"]
 --
+-- >>> splitFloat 1.2 .@hexs
+-- ["0x0","0x7f","0x19_999a"]
+--
 -- >>> 0xffffffffffffffff .@signed
 -- "-1"
 --
@@ -706,6 +710,10 @@ hex16 = hexN 16
 hex32 = hexN 32
 -- | Hexadecimal formatting with 64-bit length
 hex64 = hexN 64
+
+-- | Hexadecimal formatting with N-bit length
+hexs :: Integral n => [n] -> [String]
+hexs xs = map (hexN 0) xs
 
 -- | Binary formatting with auto-adjusted length
 bin :: Hex -> String
