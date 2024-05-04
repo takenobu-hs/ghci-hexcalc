@@ -603,6 +603,7 @@ Please see also [Hackage document](http://hackage.haskell.org/package/ghci-hexca
 | `.@hex32`                     | Show in hexadecimal string of 32bit     |
 | `.@hex64`                     | Show in hexadecimal string of 64bit     |
 | `.@hexN` n1                   | Show in hexadecimal string of n1 bit    |
+| `.@hexs`                      | Show in hexadecimal string of List      |
 |                               |                                         |
 | `.@bin`                       | Show in binary string                   |
 | `.@bin8`                      | Show in binary string of 8bit           |
