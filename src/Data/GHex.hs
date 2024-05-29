@@ -235,12 +235,12 @@ neg = negate
 
 -- | Sign extention
 --
--- >>> signext 0x80 7
+-- >>> signext 7 0x80
 -- 0xffff_ffff_ffff_ff80
--- >>> signext 0x7fff 15
+-- >>> signext 15 0x7fff
 -- 0x0000_0000_0000_7fff
-signext :: Hex -> Int -> Hex
-signext x n
+signext :: Int -> Hex -> Hex
+signext n x
   | testBit x n = sbits x (hexBitSize-1) n
   | otherwise   = cbits x (hexBitSize-1) n
 
@@ -317,66 +317,66 @@ mask n = bits n 0
 
 -- | Extract bits from n1 to n2
 --
--- >>> gets 0xabcd 15 12
+-- >>> gets 15 12 0xabcd
 -- 0x0000_0000_0000_000a
-gets :: Hex -> Int -> Int -> Hex
-gets x upper lower
+gets :: Int -> Int -> Hex -> Hex
+gets upper lower x
   | (upper >= lower) && (lower >= 0) = ((bits upper 0) .& x) .>> lower
-  | otherwise = traceWarn "Warning: gets: 3rd-arg larger than 2nd-arg" x
+  | otherwise = traceWarn "Warning: gets: 2nd-arg larger than 1st-arg" x
 
 -- | Replace bits from n1 to n2
 --
--- >>> puts 0xabcd 15 12 0b111
+-- >>> puts 15 12 0b111 0xabcd
 -- 0x0000_0000_0000_7bcd
-puts :: Hex -> Int -> Int -> Hex -> Hex
-puts x1 upper lower x2
-  | (upper >= lower) && (lower >= 0) = (cbits x1 upper lower) .|
-                                      ((mask (upper - lower) .& x2) .<< lower)
-  | otherwise = traceWarn "Warning: puts: 3rd-arg larger than 2nd-arg" x1
+puts :: Int -> Int -> Hex -> Hex -> Hex
+puts upper lower x1 x2
+  | (upper >= lower) && (lower >= 0) = (cbits x2 upper lower) .|
+                                      ((mask (upper - lower) .& x1) .<< lower)
+  | otherwise = traceWarn "Warning: puts: 2nd-arg larger than 1st-arg" x2
 
 
 -- | Extract a bit
 --
--- >>> getBit1 (bit1 6) 6
+-- >>> getBit1 6 (bit1 6)
 -- 0x0000_0000_0000_0001
-getBit1 :: Hex -> Int -> Hex
-getBit1 x n = gets x n n
+getBit1 :: Int -> Hex -> Hex
+getBit1 n x = gets n n x
 
 -- | Extract a byte
 --
--- >>> getByte1 0x12345678 2
+-- >>> getByte1 2 0x12345678
 -- 0x0000_0000_0000_0034
-getByte1 :: Hex -> Int -> Hex
-getByte1 x n = getBytes x n n
+getByte1 :: Int -> Hex -> Hex
+getByte1 n x = getBytes n n x
 
 -- | Synonym to gets
-getBits :: Hex -> Int -> Int -> Hex
+getBits :: Int -> Int -> Hex -> Hex
 getBits = gets
 
 -- | Extract bytes from n1 to n2
 --
--- >>> getBytes 0x12345678 2 1
+-- >>> getBytes 2 1 0x12345678
 -- 0x0000_0000_0000_3456
-getBytes :: Hex -> Int -> Int -> Hex
-getBytes x upper lower = gets x ((upper+1)*8-1) (lower*8)
+getBytes :: Int -> Int -> Hex -> Hex
+getBytes upper lower x = gets ((upper+1)*8-1) (lower*8) x
 
 -- | Replace a bit
 --
--- >>> putBit1 0 7 1
+-- >>> putBit1 7 1 0
 -- 0x0000_0000_0000_0080
-putBit1 :: Hex -> Int -> Hex -> Hex
-putBit1 x1 n x2 = puts x1 n n x2
+putBit1 :: Int -> Hex -> Hex -> Hex
+putBit1 n x1 x2 = puts n n x1 x2
 
 -- | Synonym to puts
-putBits :: Hex -> Int -> Int -> Hex -> Hex
+putBits :: Int -> Int -> Hex -> Hex -> Hex
 putBits = puts
 
 -- | Replace bytes from n1 to n2
 --
--- >>> putBytes 0x12345678 3 2 0xfedc
+-- >>> putBytes 3 2 0xfedc 0x12345678
 -- 0x0000_0000_fedc_5678
-putBytes :: Hex -> Int -> Int -> Hex -> Hex
-putBytes x1 upper lower x2 = puts x1 ((upper+1)*8-1) (lower*8) x2
+putBytes :: Int -> Int -> Hex -> Hex -> Hex
+putBytes upper lower x1 x2 = puts ((upper+1)*8-1) (lower*8) x1 x2
 
 
 ------------------------------------------------------------------------
@@ -472,7 +472,7 @@ gather x1 x2 = let pairs = zip (splitBits x1) (splitBits x2)
 scatter :: Hex -> Hex -> Hex -> Hex
 scatter x1 x2 x3 =
     let pairs = zip (reverse $ pos1 x2) (reverse $ splitBits x3)
-    in  foldr (\(x,y) v -> putBit1 v x (fromIntegral y)) x1 pairs
+    in  foldr (\(x,y) v -> putBit1 x (fromIntegral y) v) x1 pairs
 
 
 ------------------------------------------------------------------------
@@ -484,14 +484,14 @@ scatter x1 x2 x3 =
 -- >>> splitBits 0xa
 -- [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0]
 splitBits :: Hex -> [Int]
-splitBits x = map (fromIntegral . getBit1 x) hexBitSeq
+splitBits x = map (\n -> fromIntegral $ getBit1 n x) hexBitSeq
 
 -- | Split bytes to List
 --
 -- >>> splitBytes 0xff10
 -- [0,0,0,0,0,0,255,16]
 splitBytes :: Hex -> [Int]
-splitBytes x = map (fromIntegral . getByte1 x) hexByteSeq
+splitBytes x = map (\n -> fromIntegral $ getByte1 n x) hexByteSeq
 
 -- | Merge bits from List
 --
@@ -957,9 +957,9 @@ splitFloat :: Float -> [Int]
 splitFloat x = [sign, exp, mants]
     where
       n = float2hex x
-      sign  = fromIntegral $ gets n 31 31
-      exp   = fromIntegral $ gets n 30 23
-      mants = fromIntegral $ gets n 22 0
+      sign  = fromIntegral $ gets 31 31 n
+      exp   = fromIntegral $ gets 30 23 n
+      mants = fromIntegral $ gets 22 0  n
 
 -- | Merge float from elements
 --
@@ -968,9 +968,9 @@ splitFloat x = [sign, exp, mants]
 mergeFloat :: [Int] -> Float
 mergeFloat [sign, exp, mants] = hex2float n
     where
-      n = puts 0 31 31 (fromIntegral sign)  .|
-          puts 0 30 23 (fromIntegral exp)   .|
-          puts 0 22 0  (fromIntegral mants)
+      n = puts 31 31 (fromIntegral sign)  0 .|
+          puts 30 23 (fromIntegral exp)   0 .|
+          puts 22 0  (fromIntegral mants) 0
 
 -- | Split double to elements
 --
@@ -980,9 +980,9 @@ splitDouble :: Double -> [Int]
 splitDouble x = [sign, exp, mants]
     where
       n = double2hex x
-      sign  = fromIntegral $ gets n 63 63
-      exp   = fromIntegral $ gets n 62 52
-      mants = fromIntegral $ gets n 51 0
+      sign  = fromIntegral $ gets 63 63 n
+      exp   = fromIntegral $ gets 62 52 n
+      mants = fromIntegral $ gets 51 0  n
 
 -- | Merge double from elements
 --
@@ -991,9 +991,9 @@ splitDouble x = [sign, exp, mants]
 mergeDouble :: [Int] -> Double
 mergeDouble [sign, exp, mants] = hex2double n
     where
-      n = puts 0 63 63 (fromIntegral sign)  .|
-          puts 0 62 52 (fromIntegral exp)   .|
-          puts 0 51 0  (fromIntegral mants)
+      n = puts 63 63 (fromIntegral sign)  0 .|
+          puts 62 52 (fromIntegral exp)   0 .|
+          puts 51 0  (fromIntegral mants) 0
 
 -- | Float formatting
 float :: Hex -> String
@@ -1030,8 +1030,8 @@ usage = putStr $
           "   (inv 0xffff) .^ 0xff        logical operation\n" ++
           "   bits 15 2                   set bits from 15 to 2\n" ++
           "   bitList [15, 8, 1]          set bits by List\n" ++
-          "   gets 0xabcd 15 12           get bits from 15 to 12\n" ++
-          "   puts 0xabcd 15 12 7         replace bits from 15 to 12 by 7\n" ++
+          "   gets 15 12 0xabcd           get bits from 15 to 12\n" ++
+          "   puts 15 12 7 0xabcd         replace bits from 15 to 12 by 7\n" ++
           "   4 * mega                    predefined constant\n" ++
           "   0xffff .@bin                formatting in binary\n" ++
           "   giga .@dec                  formatting in decimal\n" ++
@@ -1049,7 +1049,7 @@ usage = putStr $
 -- | Search bit with predicate-function
 -- pos1 x = bitSearch testBit x hexBitSeq
 --
--- >>> bitSearch (\x n -> ((getBit1 x n) == 1)) (bit1 2 .| bit1 0) [3,2,1,0]
+-- >>> bitSearch (\x n -> ((getBit1 n x) == 1)) (bit1 2 .| bit1 0) [3,2,1,0]
 -- [2,0]
 bitSearch :: (Hex -> Int -> Bool) -> Hex -> [Int] -> [Int]
 bitSearch _ _ [] = []
@@ -1162,18 +1162,18 @@ traceWarn str x = trace (colorMagenta ++ str ++ colorReset) x
 --
 -- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (bits x1 x2) == (sum $ map (2^) [x2..x1]))
 --
--- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (gets all0 x1 x2) == all0)
--- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> ((gets x x1 x2) .<< x2) == (x .& bits x1 x2))
--- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (puts x x1 x2 $ gets x x1 x2) == x)
+-- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (gets x1 x2 all0) == all0)
+-- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> ((gets x1 x2 x) .<< x2) == (x .& bits x1 x2))
+-- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (puts x1 x2 (gets x1 x2 x) x) == x)
 --
--- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (gather x (bits x1 x2)) == (gets x x1 x2))
--- prop> (\(x1,x2) -> (x1 > x2 && x2 >= 0)) |=> (\(x1,x2) -> (gather x3 (bit1 x1 .| bit1 x2)) == (((getBit1 x3 x1) .<< 1) .| (getBit1 x3 x2)))
+-- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (gather x (bits x1 x2)) == (gets x1 x2 x))
+-- prop> (\(x1,x2) -> (x1 > x2 && x2 >= 0)) |=> (\(x1,x2) -> (gather x3 (bit1 x1 .| bit1 x2)) == (((getBit1 x1 x3) .<< 1) .| (getBit1 x2 x3)))
 -- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (scatter x1 x2 $ gather x1 x2) == x1)
 --
 -- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (sbits all0 x1 x2) == (bits x1 x2))
--- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (sbits all0 x1 x2) == (puts all0 x1 x2 all1))
+-- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (sbits all0 x1 x2) == (puts x1 x2 all1 all0))
 -- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (cbits all1 x1 x2) == (inv(bits x1 x2)))
--- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (cbits all1 x1 x2) == (puts all1 x1 x2 all0))
+-- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (cbits all1 x1 x2) == (puts x1 x2 all0 all1))
 -- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (cbits x x1 x2) == (inv (sbits (inv x) x1 x2)))
 --
 -- prop> (x .@pos1 .@bitList) == x
@@ -1190,8 +1190,8 @@ traceWarn str x = trace (colorMagenta ++ str ++ colorReset) x
 -- prop> (\(a1,a2,x1,x2) -> (a1 >= 1 && a2 >= 1 && (a1+a2) <= hexBitSize)) |=> (\(a1,a2,x1,x2) -> ((a1,x1) .++ (a2,x2)) == ((a1+a2), (mergeSized [(a1,x1),(a2,x2)])))
 -- prop> (\(a1,a2,x1,x2) -> (a1 >= 1 && a2 >= 1 && (a1+a2) <= hexBitSize)) |=> (\(a1,a2,x1,x2) -> (mergeSized $ splitSized [a1,a2] x1) == (x1 .& (mask (a1+a2-1))))
 --
--- prop> (\n -> (n >= 0 && x `testBit` n)) |=> (\n -> ((signext x n) .| (sbits x (n-1) 0)) == all1)
--- prop> (\n -> (n >= 0 && (not(x `testBit` n)))) |=> (\n -> ((signext x n) .& (cbits x (n-1) 0)) == all0)
+-- prop> (\n -> (n >= 0 && x `testBit` n)) |=> (\n -> ((signext n x) .| (sbits x (n-1) 0)) == all1)
+-- prop> (\n -> (n >= 0 && (not(x `testBit` n)))) |=> (\n -> ((signext n x) .& (cbits x (n-1) 0)) == all0)
 -- prop> (\x -> (not(x `testBit` (hexBitSize-1)))) |=> (\x -> (signed x) == (dec x))
 -- prop> (\x -> (x `testBit` (hexBitSize-1))) |=> (\x -> (signed x) == show(-1 * (fromIntegral $ ((inv x) + 1))::Int))
 --
