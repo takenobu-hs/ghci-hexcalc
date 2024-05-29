@@ -241,8 +241,8 @@ neg = negate
 -- 0x0000_0000_0000_7fff
 signext :: Int -> Hex -> Hex
 signext n x
-  | testBit x n = sbits x (hexBitSize-1) n
-  | otherwise   = cbits x (hexBitSize-1) n
+  | testBit x n = sbits (hexBitSize-1) n x
+  | otherwise   = cbits (hexBitSize-1) n x
 
 
 ------------------------------------------------------------------------
@@ -330,7 +330,7 @@ gets upper lower x
 -- 0x0000_0000_0000_7bcd
 puts :: Int -> Int -> Hex -> Hex -> Hex
 puts upper lower x1 x2
-  | (upper >= lower) && (lower >= 0) = (cbits x2 upper lower) .|
+  | (upper >= lower) && (lower >= 0) = (cbits upper lower x2) .|
                                       ((mask (upper - lower) .& x1) .<< lower)
   | otherwise = traceWarn "Warning: puts: 2nd-arg larger than 1st-arg" x2
 
@@ -385,17 +385,17 @@ putBytes upper lower x1 x2 = puts ((upper+1)*8-1) (lower*8) x1 x2
 
 -- | Set bits from n1 to n2 of x1
 --
--- >>> sbits 0x1234 11 8
+-- >>> sbits 11 8 0x1234
 -- 0x0000_0000_0000_1f34
-sbits :: Hex -> Int -> Int -> Hex
-sbits x upper lower = x .| (bits upper lower)
+sbits :: Int -> Int -> Hex -> Hex
+sbits upper lower x = x .| (bits upper lower)
 
 -- | Clear bits from n1 to n2 of x1
 --
--- >>> cbits 0x1234 7 4
+-- >>> cbits 7 4 0x1234
 -- 0x0000_0000_0000_1204
-cbits :: Hex -> Int -> Int -> Hex
-cbits x upper lower = x .& (inv (bits upper lower))
+cbits :: Int -> Int -> Hex -> Hex
+cbits upper lower x = x .& (inv (bits upper lower))
 
 
 ------------------------------------------------------------------------
@@ -1170,11 +1170,11 @@ traceWarn str x = trace (colorMagenta ++ str ++ colorReset) x
 -- prop> (\(x1,x2) -> (x1 > x2 && x2 >= 0)) |=> (\(x1,x2) -> (gather x3 (bit1 x1 .| bit1 x2)) == (((getBit1 x1 x3) .<< 1) .| (getBit1 x2 x3)))
 -- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (scatter x1 x2 $ gather x1 x2) == x1)
 --
--- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (sbits all0 x1 x2) == (bits x1 x2))
--- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (sbits all0 x1 x2) == (puts x1 x2 all1 all0))
--- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (cbits all1 x1 x2) == (inv(bits x1 x2)))
--- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (cbits all1 x1 x2) == (puts x1 x2 all0 all1))
--- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (cbits x x1 x2) == (inv (sbits (inv x) x1 x2)))
+-- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (sbits x1 x2 all0) == (bits x1 x2))
+-- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (sbits x1 x2 all0) == (puts x1 x2 all1 all0))
+-- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (cbits x1 x2 all1) == (inv(bits x1 x2)))
+-- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (cbits x1 x2 all1) == (puts x1 x2 all0 all1))
+-- prop> (\(x1,x2) -> (x1 >= x2 && x2 >= 0)) |=> (\(x1,x2) -> (cbits x1 x2 x) == (inv (sbits x1 x2 (inv x))))
 --
 -- prop> (x .@pos1 .@bitList) == x
 -- prop> (x .@pos0 .@bitList) == (inv x)
@@ -1190,8 +1190,8 @@ traceWarn str x = trace (colorMagenta ++ str ++ colorReset) x
 -- prop> (\(a1,a2,x1,x2) -> (a1 >= 1 && a2 >= 1 && (a1+a2) <= hexBitSize)) |=> (\(a1,a2,x1,x2) -> ((a1,x1) .++ (a2,x2)) == ((a1+a2), (mergeSized [(a1,x1),(a2,x2)])))
 -- prop> (\(a1,a2,x1,x2) -> (a1 >= 1 && a2 >= 1 && (a1+a2) <= hexBitSize)) |=> (\(a1,a2,x1,x2) -> (mergeSized $ splitSized [a1,a2] x1) == (x1 .& (mask (a1+a2-1))))
 --
--- prop> (\n -> (n >= 0 && x `testBit` n)) |=> (\n -> ((signext n x) .| (sbits x (n-1) 0)) == all1)
--- prop> (\n -> (n >= 0 && (not(x `testBit` n)))) |=> (\n -> ((signext n x) .& (cbits x (n-1) 0)) == all0)
+-- prop> (\n -> (n >= 0 && x `testBit` n)) |=> (\n -> ((signext n x) .| (sbits (n-1) 0 x)) == all1)
+-- prop> (\n -> (n >= 0 && (not(x `testBit` n)))) |=> (\n -> ((signext n x) .& (cbits (n-1) 0 x)) == all0)
 -- prop> (\x -> (not(x `testBit` (hexBitSize-1)))) |=> (\x -> (signed x) == (dec x))
 -- prop> (\x -> (x `testBit` (hexBitSize-1))) |=> (\x -> (signed x) == show(-1 * (fromIntegral $ ((inv x) + 1))::Int))
 --
