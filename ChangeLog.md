@@ -4,7 +4,7 @@
 
 * Changed argument positions to allow function chaining:
   - signext, gets, getBit1, getByte1, getBits, getBytes,
-    puts, putBit1, putBits, putBytes, cbits, sbits
+    puts, putBit1, putBits, putBytes, cbits, sbits, gather, scatter
 
 
 ## 0.1.2.0  -- May. 2024
